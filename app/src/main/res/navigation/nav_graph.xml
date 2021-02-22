@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainActivity2">
+    <activity
+        android:id="@+id/recordingsActivity"
+        android:name="com.example.smarticompanionapp.RecordingsActivity"
+        android:label="activity_recordings"
+        tools:layout="@layout/activity_recordings" >
+        <action
+            android:id="@+id/action_recordingsActivity_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
+    </activity>
+    <activity
+        android:id="@+id/settingsActivity"
+        android:name="com.example.smarticompanionapp.SettingsActivity"
+        android:label="SettingsActivity" />
+    <activity
+        android:id="@+id/mainActivity2"
+        android:name="com.example.smarticompanionapp.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" >
+        <action
+            android:id="@+id/action_mainActivity2_to_recordingsActivity"
+            app:destination="@id/recordingsActivity" />
+    </activity>
+</navigation>

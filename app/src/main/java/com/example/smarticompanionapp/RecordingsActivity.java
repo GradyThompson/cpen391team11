@@ -1,0 +1,61 @@
+/*
+ * This activity represents the Recordings screen of the app
+ * Contains a scrollable list of recordings that are sorted based on severity
+ * Has a button in the top right that brings up the settings activity.
+ */
+
+package com.example.smarticompanionapp;
+
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
+public class RecordingsActivity extends AppCompatActivity {
+
+    private RecordingsList recordingsList;
+
+    private ArrayList<String> videoData = new ArrayList<String>();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_recordings);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ImageButton settingsButton = (ImageButton) findViewById(R.id.settingsButton);
+        settingsButton.setOnClickListener(view -> {
+            Intent settingsIntent = new Intent(RecordingsActivity.this, SettingsActivity.class);
+            startActivity(settingsIntent);
+        });
+
+        recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1,videoData);
+
+        ListView recordListView = (ListView) findViewById(R.id.recordings_list_view);
+
+        recordListView.setAdapter(recordingsList);
+
+        //will need to populate list with data on runtime, probably put up a loading screen
+        //while retrieving recordings
+        for (int x = 0; x <= 20; x++){
+            videoData.add("test" + x);
+        }
+
+        recordingsList.notifyDataSetChanged();
+
+    }
+
+}

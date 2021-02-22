@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is used for the formatting of the row for the recordings list
+    Consists of 3 parts from left to right, a video thumbnail, text containing
+    data about the recording, and an options button-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:background="#FFFFFF" >
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="30pt"
+        android:layout_height="30pt"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:id="@+id/videoData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/thumbnail"
+        android:layout_centerVertical="true"
+        android:paddingStart="16dp"
+        android:textSize="17sp"/>
+    <ImageView
+        android:id="@+id/optionsIcon"
+        android:layout_width="15pt"
+        android:layout_height="15pt"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
