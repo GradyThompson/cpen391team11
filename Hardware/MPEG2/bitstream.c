@@ -4,10 +4,11 @@
 
 #define BS_BASE_SIZE 16
 
-struct bitstream * bs_alloc(void) {
-	struct bitstream* bs = calloc(0, sizeof(struct bitstream));
+struct bitstream * bs_alloc(FILE* file) {
+	struct bitstream* bs = calloc(1, sizeof(struct bitstream));
 
-	bs->data = calloc(0, BS_BASE_SIZE * sizeof(uint32_t));
+	bs->file = file;
+	bs->data = calloc(BS_BASE_SIZE, sizeof(uint32_t));
 	bs->capacity = 16;
 	
 	return bs;
@@ -32,10 +33,16 @@ void bs_align(struct bitstream* bs, uint8_t bits) {
 
 static void bs_push(struct bitstream* bs) {
 	if (bs->length == bs->capacity) {
-		uint8_t* new_data = calloc(0, bs->capacity * 2);
-		memcpy(new_data, bs->data, bs->capacity);
-		bs->data = new_data;
-		bs->capacity = 2 * bs->capacity;
+		if (bs->file != NULL) {
+			fwrite(bs->data, sizeof(uint8_t), bs->length, bs->file);
+			memset(bs->data, 0, bs->length);
+			bs->length = 0;
+		} else {
+			uint8_t* new_data = calloc(bs->capacity * 2, sizeof(uint8_t));
+			memcpy(new_data, bs->data, bs->capacity);
+			bs->data = new_data;
+			bs->capacity = 2 * bs->capacity;
+		}
 	}
 	
 	bs->data[bs->length] = bs->part;
@@ -64,4 +71,15 @@ void bs_add(struct bitstream* bs, uint32_t data, uint8_t length) {
 	
 	bs->part = (bs->part << length) | data;
 	bs->part_length += length;
+}
+
+void bs_flush(struct bitstream* bs) {
+	bs->part = (bs->part << (8 - bs->part_length));
+	bs_push(bs);
+	if (bs->file) {
+		fwrite(bs->data, sizeof(uint8_t), bs->length, bs->file);
+		memset(bs->data, 0, bs->length);
+		bs->length = 0;
+		fflush(bs->file);
+	}
 }

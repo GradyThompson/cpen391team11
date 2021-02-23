@@ -2,7 +2,7 @@
 #include <mpeg2/bitstream.h>
 
 TEST_CASE("Basic bitstream test", "[bitstream]") {
-	bitstream* bs = bs_alloc();
+	bitstream* bs = bs_alloc(nullptr);
 	
 	bs_add(bs, 0x12, 8);
 
@@ -15,7 +15,7 @@ TEST_CASE("Basic bitstream test", "[bitstream]") {
 }
 
 TEST_CASE("Endianness test", "[bitstream]") {
-	bitstream* bs = bs_alloc();
+	bitstream* bs = bs_alloc(nullptr);
 	
 	bs_add(bs, 0x12345678, 32);
 
@@ -29,7 +29,7 @@ TEST_CASE("Endianness test", "[bitstream]") {
 }
 
 TEST_CASE("Multiple add test", "[bitstream]") {
-	bitstream* bs = bs_alloc();
+	bitstream* bs = bs_alloc(nullptr);
 	
 	bs_add(bs, 0x123, 12);
 	bs_add(bs, 0x2, 3);
@@ -45,7 +45,7 @@ TEST_CASE("Multiple add test", "[bitstream]") {
 }
 
 TEST_CASE("Align test", "[bitstream]") {
-	bitstream* bs = bs_alloc();
+	bitstream* bs = bs_alloc(nullptr);
 
 	bs_add(bs, 0x123, 11);
 	bs_align(bs, 8);
@@ -55,4 +55,21 @@ TEST_CASE("Align test", "[bitstream]") {
 	REQUIRE(bs->length  == 2);
 	
 	bs_free(bs);
+}
+
+TEST_CASE("Flush test", "[bitstream]") {
+	FILE*      fp = tmpfile();
+	bitstream* bs = bs_alloc(fp);
+
+	bs_add(bs, 0x123, 11);
+	bs_flush(bs);
+	
+	rewind(fp);
+	fread(bs->data, 1, 2, fp);
+	
+	REQUIRE(bs->data[0] == 0x24);
+	REQUIRE(bs->data[1] == 0x60);
+	
+	bs_free(bs);
+	fclose(fp);
 }
