@@ -24,4 +24,7 @@
 
     <string name="connect_button">connect</string>
     <string name="settings_button">settings button</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="wi_fi">Wi-Fi</string>
+    <string name="usb">USB</string>
 </resources>

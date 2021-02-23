@@ -21,8 +21,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button connectButton = (Button) findViewById(R.id.connect_button);
-        connectButton.setOnClickListener(v -> {
+        Button usbButton = (Button) findViewById(R.id.usb_button);
+        usbButton.setOnClickListener(v -> {
+            Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
+            startActivity(recordingsIntent);
+        });
+
+        Button wifiButton = (Button) findViewById(R.id.wifi_button);
+        wifiButton.setOnClickListener(v -> {
+            Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
+            startActivity(recordingsIntent);
+        });
+
+        Button bluetoothButton = (Button) findViewById(R.id.bluetooth_button);
+        bluetoothButton.setOnClickListener(v -> {
             Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
             startActivity(recordingsIntent);
         });

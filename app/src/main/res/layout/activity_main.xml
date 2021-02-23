@@ -7,15 +7,33 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/connect_button"
+        android:id="@+id/usb_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/connect_button"
+        android:text="@string/usb"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.446"/>
+        app:layout_constraintTop_toBottomOf="@+id/wifi_button" />
+
+    <Button
+        android:id="@+id/wifi_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/wi_fi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/bluetooth_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bluetooth"
+        app:layout_constraintBottom_toTopOf="@+id/wifi_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
