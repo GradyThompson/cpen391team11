@@ -12,17 +12,21 @@
 package com.example.smarticompanionapp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class RecordingsList extends ArrayAdapter<String> {
@@ -61,6 +65,14 @@ public class RecordingsList extends ArrayAdapter<String> {
             builder.setNeutralButton("Play", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"play video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
+
+                VideoView vid;
+                MediaController m;
+                View video = inflater.inflate(R.layout.video_view, parent, false);
+                vid = (VideoView) video.findViewById(R.id.videoView);
+                Uri u = Uri.parse("");
+                vid.setVideoURI(u);
+                vid.start();
             });
             builder.setPositiveButton("Export", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"export video placeholder", Toast.LENGTH_SHORT);
