@@ -4,6 +4,7 @@
     data about the recording, and an options button-->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:paddingLeft="16dp"
@@ -23,10 +24,12 @@
         android:layout_centerVertical="true"
         android:paddingStart="16dp"
         android:textSize="17sp"/>
-    <ImageView
+
+    <ImageButton
         android:id="@+id/optionsIcon"
         android:layout_width="15pt"
         android:layout_height="15pt"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true" />
+        android:background="?android:selectableItemBackground"/>
 </RelativeLayout>

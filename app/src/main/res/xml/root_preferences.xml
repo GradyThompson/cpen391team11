@@ -1,35 +1,56 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
-
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
+    <PreferenceCategory app:title="@string/recordings_header">
 
         <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
+            app:title="@string/Severity_title"
+            app:key="severity_threshold"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="3"
+            app:entries="@array/severity_threshold_entries"
+            app:entryValues="@array/severity_threshold_values"
+            />
+
+        <ListPreference
+            app:defaultValue="2"
+            app:entries="@array/max_time_entries"
+            app:entryValues="@array/max_time_values"
+            app:key="max_time"
+            app:title="@string/Max_time_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
+    <PreferenceCategory app:title="@string/notifications_header">
 
         <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
+            app:key="Push_notifications"
+            app:title="@string/Push_notifications_title" />
 
         <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+            android:id="@+id/switchPreferenceCompat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:key="Physical_notifications"
+            app:title="@string/Physical_notifications_title" />
+        <SwitchPreferenceCompat
+            app:key="Email_notifications"
+            app:title="@string/Email_notifications_title" />
 
+        <EditTextPreference
+            app:key="email_address"
+            app:title="@string/email_entry_title"
+            app:useSimpleSummaryProvider="true"
+            app:dependency="Email_notifications"/>
+        <SwitchPreferenceCompat
+            app:key="text_notifications"
+            app:title="@string/Text_notifications_title" />
+        <EditTextPreference
+            app:key="phone_number"
+            app:title="@string/phone_entry_title"
+            app:useSimpleSummaryProvider="true"
+            app:dependency="text_notifications"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

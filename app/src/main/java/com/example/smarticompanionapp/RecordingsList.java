@@ -1,3 +1,14 @@
+/*
+ * This class is used to fill in the rows of the list view in RecordingsActivity that represent videos
+ * Takes as argument, in constructor the Recordings Activity context, textview resource id
+ * and an ArrayList with strings consisting of the data about a video that we wish to display.
+ *
+ * Has three components, the video thumbnail, video data and a options menu button
+ * currently the video thumbnail is a placeholder
+ * The options menu popup also has placeholder functionality
+ * Will need to add interaction with a video data type
+ */
+
 package com.example.smarticompanionapp;
 
 import android.content.Context;
@@ -5,8 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import java.util.ArrayList;
 
@@ -32,8 +47,34 @@ public class RecordingsList extends ArrayAdapter<String> {
         TextView data = (TextView) row.findViewById(R.id.videoData);
         data.setText((StringArray.get(position)));
 
-        ImageView optionIcon = (ImageView) row.findViewById(R.id.optionsIcon);
-        optionIcon.setImageResource(R.drawable.ic_launcher_background); //placeholder, should be a menu icon
+        ImageButton optionIcon = (ImageButton) row.findViewById(R.id.optionsIcon);
+        //optionIcon.setVisibility(View.VISIBLE);
+        optionIcon.setImageResource(R.drawable.ic_action_name);
+
+
+        /*
+         * This is used to generate the dialog box with play/export/delete options
+         * Currently just displays toasts that buttons have been pressed
+         */
+        optionIcon.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setNeutralButton("Play", (dialog, which) -> {
+                Toast toast = Toast.makeText(context.getApplicationContext(),"play video placeholder", Toast.LENGTH_SHORT);
+                toast.show();
+            });
+            builder.setPositiveButton("Export", (dialog, which) -> {
+                Toast toast = Toast.makeText(context.getApplicationContext(),"export video placeholder", Toast.LENGTH_SHORT);
+                toast.show();
+            });
+            builder.setNegativeButton("delete", (dialog, which) -> {
+                Toast toast = Toast.makeText(context.getApplicationContext(),"delete video placeholder", Toast.LENGTH_SHORT);
+                toast.show();
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
+
         return row;
     }
 }

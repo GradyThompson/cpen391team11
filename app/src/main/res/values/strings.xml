@@ -3,19 +3,21 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="recordings_header">Recording Settings</string>
+    <string name="notifications_header">Notifications</string>
 
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <!-- Recordings Preferences -->
+    <string name="Severity_title">Severity threshold</string>
+    <string name="Max_time_title">Default max recording length</string>
 
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- Notification Preferences -->
+    <string name="Push_notifications_title">Enable push notifications</string>
+    <string name="Physical_notifications_title">Enable physical notifications</string>
+    <string name="Email_notifications_title">Enable Email notifications</string>
+    <string name="email_entry_title">Enter email</string>
+    <string name="Text_notifications_title">Enable text notifications</string>
+    <string name="phone_entry_title">Enter phone number</string>
+
     <string name="title_activity_recordings">ScrollingActivity</string>
 
     <string name="action_settings">Settings</string>
