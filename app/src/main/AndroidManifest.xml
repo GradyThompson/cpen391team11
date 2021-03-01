@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.smarticompanionapp">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,6 +24,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".RecordingsActivity" />
         </activity>
+        <activity
+            android:name=".BluetoothActivity"
+            android:label="@string/title_activity_bluetooth"
+            android:theme="@style/Theme.SmartICompanionApp.NoActionBar" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

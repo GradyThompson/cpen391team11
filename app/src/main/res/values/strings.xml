@@ -27,4 +27,6 @@
     <string name="bluetooth">Bluetooth</string>
     <string name="wi_fi">Wi-Fi</string>
     <string name="usb">USB</string>
+    <string name="settings_option">Settings Option</string>
+    <string name="title_activity_bluetooth">BluetoothActivity</string>
 </resources>

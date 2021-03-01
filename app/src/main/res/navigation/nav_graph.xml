@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainActivity2">
+    app:startDestination="@id/mainActivity">
     <activity
         android:id="@+id/recordingsActivity"
         android:name="com.example.smarticompanionapp.RecordingsActivity"
@@ -18,12 +18,24 @@
         android:name="com.example.smarticompanionapp.SettingsActivity"
         android:label="SettingsActivity" />
     <activity
-        android:id="@+id/mainActivity2"
+        android:id="@+id/mainActivity"
         android:name="com.example.smarticompanionapp.MainActivity"
         android:label="activity_main"
         tools:layout="@layout/activity_main" >
         <action
-            android:id="@+id/action_mainActivity2_to_recordingsActivity"
+            android:id="@+id/action_mainActivity_to_recordingsActivity"
+            app:destination="@id/recordingsActivity" />
+        <action
+            android:id="@+id/action_mainActivity_to_bluetoothActivity"
+            app:destination="@id/bluetoothActivity" />
+    </activity>
+    <activity
+        android:id="@+id/bluetoothActivity"
+        android:name="com.example.smarticompanionapp.BluetoothActivity"
+        android:label="bluetooth_activity"
+        tools:layout="@layout/bluetooth_activity" >
+        <action
+            android:id="@+id/action_bluetoothActivity_to_recordingsActivity"
             app:destination="@id/recordingsActivity" />
     </activity>
 </navigation>

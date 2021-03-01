@@ -28,15 +28,24 @@ import androidx.appcompat.app.AlertDialog;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 public class RecordingsList extends ArrayAdapter<String> {
     private Context context;
-    private ArrayList<String> StringArray;
+    private ArrayList<VideoResult> VideoArray;
 
-    public RecordingsList (Context context, int textViewResourceId, ArrayList<String> StringArray) {
-        super(context, textViewResourceId,StringArray);
+    public RecordingsList (Context context, int textViewResourceId, ArrayList<VideoResult> VideoArray) {
+        super(context, textViewResourceId, getStringList(VideoArray));
         this.context = context;
-        this.StringArray = StringArray;
+        this.VideoArray = VideoArray;
+    }
+
+    private static ArrayList<String> getStringList(ArrayList<VideoResult> videoArray) {
+        ArrayList<String> StringArray = new ArrayList<>();
+        for (VideoResult v : videoArray) {
+            StringArray.add(v.getDateTime());
+        }
+        return StringArray;
     }
 
     @Override
@@ -49,7 +58,7 @@ public class RecordingsList extends ArrayAdapter<String> {
         thumbnail.setVisibility(View.VISIBLE);
 
         TextView data = (TextView) row.findViewById(R.id.videoData);
-        data.setText((StringArray.get(position)));
+        data.setText((VideoArray.get(position).getDateTime()));
 
         ImageButton optionIcon = (ImageButton) row.findViewById(R.id.optionsIcon);
         //optionIcon.setVisibility(View.VISIBLE);
@@ -70,7 +79,7 @@ public class RecordingsList extends ArrayAdapter<String> {
                 MediaController m;
                 View video = inflater.inflate(R.layout.video_view, parent, false);
                 vid = (VideoView) video.findViewById(R.id.videoView);
-                Uri u = Uri.parse("");
+                Uri u = VideoArray.get(position).getVideo();
                 vid.setVideoURI(u);
                 vid.start();
             });
@@ -78,7 +87,7 @@ public class RecordingsList extends ArrayAdapter<String> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"export video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
             });
-            builder.setNegativeButton("delete", (dialog, which) -> {
+            builder.setNegativeButton("Delete", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"delete video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
             });

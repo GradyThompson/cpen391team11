@@ -25,12 +25,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecordingsActivity extends AppCompatActivity {
 
     private RecordingsList recordingsList;
 
-    private ArrayList<String> videoData = new ArrayList<String>();
+    private ArrayList<VideoResult> videoData = new ArrayList<VideoResult>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,14 @@ public class RecordingsActivity extends AppCompatActivity {
             startActivity(settingsIntent);
         });
 
-        recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1,videoData);
+        Bundle b = getIntent().getExtras();
+        ArrayList<VideoResult> videoData = new ArrayList<>();
+        
+        if (b != null) {
+            videoData = (ArrayList<VideoResult>) b.get("videos");
+        }
+
+        recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, videoData);
 
         ListView recordListView = (ListView) findViewById(R.id.recordings_list_view);
 
@@ -56,7 +64,7 @@ public class RecordingsActivity extends AppCompatActivity {
 
         //placeholder
         for (int x = 0; x <= 20; x++){
-            videoData.add("test" + x);
+            videoData.add(new VideoResult(null, "test" + x));
         }
 
         recordingsList.notifyDataSetChanged();
