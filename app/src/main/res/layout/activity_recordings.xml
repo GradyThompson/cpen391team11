@@ -22,21 +22,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/settingsButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="28dp"
-            android:background="?android:selectableItemBackground"
-            android:contentDescription="@string/settings_button"
-            android:src="@drawable/ic_settings_icon"
-            app:layout_constraintBottom_toTopOf="@+id/recordings_list_view"
-            app:layout_constraintEnd_toEndOf="@+id/toolbar"
-            app:layout_constraintTop_toTopOf="@+id/toolbar" />
-
         <ListView
             android:id="@+id/recordings_list_view"
             android:layout_width="410dp"
@@ -49,6 +34,21 @@
             app:layout_constraintVertical_bias="1.0">
 
         </ListView>
+
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="28dp"
+            android:background="?android:selectableItemBackground"
+            android:contentDescription="@string/settings_button"
+            android:src="@drawable/ic_settings_icon"
+            app:layout_constraintBottom_toTopOf="@+id/recordings_list_view"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

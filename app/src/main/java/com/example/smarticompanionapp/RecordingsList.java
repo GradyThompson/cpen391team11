@@ -32,14 +32,25 @@ import java.util.stream.IntStream;
 
 public class RecordingsList extends ArrayAdapter<String> {
     private Context context;
-    private ArrayList<VideoResult> VideoArray;
+    //private ArrayList<VideoResult> VideoArray;
+    private ArrayList<String> StringArray;
 
+    /*
     public RecordingsList (Context context, int textViewResourceId, ArrayList<VideoResult> VideoArray) {
         super(context, textViewResourceId, getStringList(VideoArray));
         this.context = context;
         this.VideoArray = VideoArray;
     }
 
+     */
+
+    public RecordingsList (Context context, int textViewResourceId, ArrayList<String> StringArray) {
+        super(context, textViewResourceId,StringArray);
+        this.context = context;
+        this.StringArray = StringArray;
+    }
+
+    /*
     private static ArrayList<String> getStringList(ArrayList<VideoResult> videoArray) {
         ArrayList<String> StringArray = new ArrayList<>();
         for (VideoResult v : videoArray) {
@@ -47,6 +58,8 @@ public class RecordingsList extends ArrayAdapter<String> {
         }
         return StringArray;
     }
+
+     */
 
     @Override
     public View getView(int position, View contextView, ViewGroup parent) {
@@ -58,7 +71,8 @@ public class RecordingsList extends ArrayAdapter<String> {
         thumbnail.setVisibility(View.VISIBLE);
 
         TextView data = (TextView) row.findViewById(R.id.videoData);
-        data.setText((VideoArray.get(position).getDateTime()));
+        //data.setText((VideoArray.get(position).getDateTime()));
+        data.setText((StringArray.get(position)));
 
         ImageButton optionIcon = (ImageButton) row.findViewById(R.id.optionsIcon);
         //optionIcon.setVisibility(View.VISIBLE);
@@ -75,12 +89,15 @@ public class RecordingsList extends ArrayAdapter<String> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"play video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
 
-                VideoView vid;
                 MediaController m;
                 View video = inflater.inflate(R.layout.video_view, parent, false);
-                vid = (VideoView) video.findViewById(R.id.videoView);
+                VideoView vid = (VideoView) video.findViewById(R.id.videoView);
+                /*
+                Uri u = Uri.parse("");
                 Uri u = VideoArray.get(position).getVideo();
                 vid.setVideoURI(u);
+                */
+                vid.setVideoPath("android.resource://" + context.getPackageName() + "/" + R.raw.test_video_0);
                 vid.start();
             });
             builder.setPositiveButton("Export", (dialog, which) -> {
