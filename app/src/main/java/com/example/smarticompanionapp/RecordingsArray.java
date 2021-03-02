@@ -7,6 +7,7 @@
 package com.example.smarticompanionapp;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class RecordingsArray {
 
@@ -17,7 +18,7 @@ public class RecordingsArray {
 
     //these will be public now for easy testing, later want them to be private to prevent exposing
     //these arrays directly
-    public ArrayList<Recording> RecArray = new ArrayList<>();
+    public LinkedList<Recording> RecArray = new LinkedList<>();
     public ArrayList<String> videoDataList = new ArrayList<>();
 
 

@@ -86,19 +86,19 @@ public class RecordingsList extends ArrayAdapter<String> {
         optionIcon.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setNeutralButton("Play", (dialog, which) -> {
-                Toast toast = Toast.makeText(context.getApplicationContext(),"play video placeholder", Toast.LENGTH_SHORT);
-                toast.show();
 
-                MediaController m;
+                //This probably should be moved a separate fragment
+                MediaController m = new MediaController(context);
                 View video = inflater.inflate(R.layout.video_view, parent, false);
                 VideoView vid = (VideoView) video.findViewById(R.id.videoView);
-                /*
-                Uri u = Uri.parse("");
-                Uri u = VideoArray.get(position).getVideo();
+
+                Uri u = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.test_video_0);
+                //Uri u = VideoArray.get(position).getVideo();
                 vid.setVideoURI(u);
-                */
-                vid.setVideoPath("android.resource://" + context.getPackageName() + "/" + R.raw.test_video_0);
+                vid.setMediaController(m);
                 vid.start();
+                Toast toast = Toast.makeText(context.getApplicationContext(),"play video placeholder", Toast.LENGTH_SHORT);
+                toast.show();
             });
             builder.setPositiveButton("Export", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"export video placeholder", Toast.LENGTH_SHORT);
@@ -115,4 +115,5 @@ public class RecordingsList extends ArrayAdapter<String> {
 
         return row;
     }
+
 }
