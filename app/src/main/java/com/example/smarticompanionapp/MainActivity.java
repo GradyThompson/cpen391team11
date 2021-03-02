@@ -8,17 +8,16 @@
 
 package com.example.smarticompanionapp;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -81,9 +80,13 @@ public class MainActivity extends AppCompatActivity {
 
         Button bluetoothButton = (Button) findViewById(R.id.bluetooth_button);
         bluetoothButton.setOnClickListener(v -> {
-            Toast.makeText(getApplicationContext(), "Bluetooth",Toast.LENGTH_SHORT).show();
-            Intent bluetoothIntent = new Intent(MainActivity.this, BluetoothActivity.class);
-            startActivity(bluetoothIntent);
+            if (BluetoothAdapter.getDefaultAdapter() == null) {
+                Toast toast = Toast.makeText(this.getApplicationContext(),"Bluetooth Not Supported", Toast.LENGTH_SHORT);
+                toast.show();
+            } else {
+                Intent bluetoothIntent = new Intent(MainActivity.this, BluetoothActivity.class);
+                startActivity(bluetoothIntent);
+            }
         });
     }
 }

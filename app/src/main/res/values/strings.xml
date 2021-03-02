@@ -29,4 +29,5 @@
     <string name="usb">USB</string>
     <string name="settings_option">Settings Option</string>
     <string name="title_activity_bluetooth">BluetoothActivity</string>
+    <string name="title_activity_video">VideoActivity</string>
 </resources>

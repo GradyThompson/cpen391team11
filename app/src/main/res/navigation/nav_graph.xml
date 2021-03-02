@@ -11,7 +11,10 @@
         tools:layout="@layout/activity_recordings" >
         <action
             android:id="@+id/action_recordingsActivity_to_settingsActivity"
-            app:destination="@id/settingsActivity" />
+            app:destination="@id/settingsActivity"/>
+        <action
+            android:id="@+id/action_recordingsActivity_to_videoActivity"
+            app:destination="@id/videoActivity"/>
     </activity>
     <activity
         android:id="@+id/settingsActivity"
@@ -38,4 +41,9 @@
             android:id="@+id/action_bluetoothActivity_to_recordingsActivity"
             app:destination="@id/recordingsActivity" />
     </activity>
+    <activity
+        android:id="@+id/videoActivity"
+        android:name="com.example.smarticompanionapp.VideoActivity"
+        android:label="video_activity"
+        tools:layout="@layout/video_view" />
 </navigation>

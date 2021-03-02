@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -47,10 +48,9 @@ public class RecordingsActivity extends AppCompatActivity {
         });
 
         Bundle b = getIntent().getExtras();
-        ArrayList<VideoResult> videoData = new ArrayList<>();
         
         if (b != null) {
-            videoData = (ArrayList<VideoResult>) b.get("videos");
+            videoData.addAll((ArrayList<VideoResult>)b.get("videos"));
         }
 
         recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, videoData);
