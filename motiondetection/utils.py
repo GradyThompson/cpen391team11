@@ -19,12 +19,12 @@ def checkTime(userStart, userEnd, recordTime):
 		else:
 			return False
 
-def sizeScore(size):
-	res = size / 200
+def scaleScore(score):
+	res = score / 200
 	res = 20 if (res > 20) else res
 	return res
 
-def severityCalculation(timeInRange, recordLength, size):
+def severityCalculation(timeInRange, recordLength, size, mv):
 	score = 0
 	if (timeInRange):
 		score += 50
@@ -35,6 +35,7 @@ def severityCalculation(timeInRange, recordLength, size):
 		score += recordLength
 
 	score += size
+	score += mv
 
 	return score
 
