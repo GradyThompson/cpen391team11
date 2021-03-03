@@ -11,6 +11,7 @@ package com.example.smarticompanionapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -29,6 +30,8 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import java.util.Arrays;
@@ -42,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d("TAG", token);
 
         Button usbButton = (Button) findViewById(R.id.usb_button);
         usbButton.setOnClickListener(v -> {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "849971592468",
+    "project_id": "macro-dogfish-306517",
+    "storage_bucket": "macro-dogfish-306517.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849971592468:android:8b8d91c632528b928cd601",
+        "android_client_info": {
+          "package_name": "com.example.smarticompanionapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849971592468-jn675bd88705m1geu1hp02htrnujqkbo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkUn7YFzwd_5w2v0m4sQ-yVfPm24o_FPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849971592468-jn675bd88705m1geu1hp02htrnujqkbo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
