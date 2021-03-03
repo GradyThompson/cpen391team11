@@ -12,7 +12,9 @@
 package com.example.smarticompanionapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,24 +30,17 @@ import androidx.appcompat.app.AlertDialog;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
-public class RecordingsList extends ArrayAdapter<String> {
+public class RecordingsList extends ArrayAdapter<VideoResult> {
     private Context context;
     private ArrayList<VideoResult> VideoArray;
 
     public RecordingsList (Context context, int textViewResourceId, ArrayList<VideoResult> VideoArray) {
-        super(context, textViewResourceId, getStringList(VideoArray));
+        super(context, textViewResourceId, VideoArray);
         this.context = context;
         this.VideoArray = VideoArray;
-    }
-
-    private static ArrayList<String> getStringList(ArrayList<VideoResult> videoArray) {
-        ArrayList<String> StringArray = new ArrayList<>();
-        for (VideoResult v : videoArray) {
-            StringArray.add(v.getDateTime());
-        }
-        return StringArray;
     }
 
     @Override
@@ -75,13 +70,10 @@ public class RecordingsList extends ArrayAdapter<String> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"play video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
 
-                VideoView vid;
-                MediaController m;
-                View video = inflater.inflate(R.layout.video_view, parent, false);
-                vid = (VideoView) video.findViewById(R.id.videoView);
-                Uri u = VideoArray.get(position).getVideo();
-                vid.setVideoURI(u);
-                vid.start();
+                Intent videoIntent = new Intent(parent.getContext(), VideoActivity.class);
+                videoIntent.putExtra("vid", VideoArray.get(position).getVideo());
+                videoIntent.putExtra("dt", VideoArray.get(position).getDateTime());
+                context.startActivity(videoIntent);
             });
             builder.setPositiveButton("Export", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"export video placeholder", Toast.LENGTH_SHORT);
@@ -90,6 +82,8 @@ public class RecordingsList extends ArrayAdapter<String> {
             builder.setNegativeButton("Delete", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"delete video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
+                this.remove(this.getItem(position));
+                this.notifyDataSetChanged();
             });
 
             AlertDialog dialog = builder.create();

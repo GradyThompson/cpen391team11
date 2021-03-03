@@ -1,17 +1,18 @@
+/*
+ * This activity represents the Recordings screen of the app
+ * Contains a scrollable list of recordings that are sorted based on severity
+ * Has a button in the top right that brings up the settings activity.
+ */
+
 package com.example.smarticompanionapp;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,24 +20,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Set;
 
-class BluetoothActivity extends AppCompatActivity {
-    Button b1, b2, b3, b4;
+public class BluetoothActivity extends AppCompatActivity {
+
     private BluetoothAdapter BA;
     private Set<BluetoothDevice> pairedDevices;
-    ListView lv;
+    private ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bluetooth_activity);
 
-        Toast.makeText(getApplicationContext(), "Made it",Toast.LENGTH_SHORT).show();
-        b1 = (Button) findViewById(R.id.button);
-        b2 = (Button)findViewById(R.id.button2);
-
         BA = BluetoothAdapter.getDefaultAdapter();
-        lv = (ListView)findViewById(R.id.listView);
 
+        if (BA == null) {
+            Toast toast = Toast.makeText(this.getApplicationContext(),"Bluetooth Not Supported", Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
         if (!BA.isEnabled()) {
             Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(turnOn, 0);
@@ -61,4 +62,3 @@ class BluetoothActivity extends AppCompatActivity {
         lv.setAdapter(adapter);
     }
 }
-

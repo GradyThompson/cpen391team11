@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.smarticompanionapp">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -27,6 +29,10 @@
         <activity
             android:name=".BluetoothActivity"
             android:label="@string/title_activity_bluetooth"
+            android:theme="@style/Theme.SmartICompanionApp.NoActionBar" />
+        <activity
+            android:name=".VideoActivity"
+            android:label="@string/title_activity_video"
             android:theme="@style/Theme.SmartICompanionApp.NoActionBar" />
 
         <activity android:name=".MainActivity">
