@@ -32,10 +32,7 @@ public class RecordingsActivity extends AppCompatActivity {
 
     private RecordingsList recordingsList;
 
-    //private ArrayList<VideoResult> videoData = new ArrayList<VideoResult>();
-    private ArrayList<String> videoData = new ArrayList<String>();
-
-    private RecordingsArray videoArray = new RecordingsArray();
+    private ArrayList<VideoResult> videoData = new ArrayList<VideoResult>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +41,18 @@ public class RecordingsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Currently there's a bug where this disappears sometimes when reentering the recordings
-        //activity screen
         ImageButton settingsButton = (ImageButton) findViewById(R.id.settingsButton);
         settingsButton.setOnClickListener(view -> {
             Intent settingsIntent = new Intent(RecordingsActivity.this, SettingsActivity.class);
             startActivity(settingsIntent);
         });
 
-        /*
         Bundle b = getIntent().getExtras();
-        
+
         if (b != null) {
             videoData.addAll((ArrayList<VideoResult>)b.get("videos"));
         }
-        */
+
         recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, videoData);
 
         ListView recordListView = (ListView) findViewById(R.id.recordings_list_view);
@@ -70,14 +64,7 @@ public class RecordingsActivity extends AppCompatActivity {
 
         //placeholder
         for (int x = 0; x <= 20; x++){
-            //videoData.add(new VideoResult(null, "test" + x));
-
-            videoArray.videoDataList.add("test " + x);
-        }
-
-        videoData.clear();
-        for (int i = 0; i < videoArray.getVideoDataList().size(); i++) {
-            videoData.add(videoArray.getVideoData(i));
+            videoData.add(new VideoResult(null, "test" + x));
         }
 
         recordingsList.notifyDataSetChanged();
