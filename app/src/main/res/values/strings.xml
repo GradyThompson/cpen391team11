@@ -7,16 +7,14 @@
     <string name="notifications_header">Notifications</string>
 
     <!-- Recordings Preferences -->
-    <string name="Severity_title">Severity threshold</string>
-    <string name="Max_time_title">Default max recording length</string>
+    <string name="Max_time_title">Maximum recording length</string>
+    <string name="Min_time_title">Minimum recording length</string>
+    <string name="Retention_time_title">Retain recordings for:</string>
 
     <!-- Notification Preferences -->
     <string name="Push_notifications_title">Enable push notifications</string>
     <string name="Physical_notifications_title">Enable physical notifications</string>
-    <string name="Email_notifications_title">Enable Email notifications</string>
-    <string name="email_entry_title">Enter email</string>
-    <string name="Text_notifications_title">Enable text notifications</string>
-    <string name="phone_entry_title">Enter phone number</string>
+    <string name="Severity_title">Severity threshold for notifications</string>
 
     <string name="title_activity_recordings">ScrollingActivity</string>
 

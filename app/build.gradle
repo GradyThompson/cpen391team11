@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.smarticompanionapp"
-        minSdkVersion 19
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -45,6 +45,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.6.0')
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'
+
+    implementation 'com.arthenica:mobile-ffmpeg-full:4.4'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

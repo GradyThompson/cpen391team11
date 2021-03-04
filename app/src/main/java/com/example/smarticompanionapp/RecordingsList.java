@@ -32,6 +32,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+import com.arthenica.mobileffmpeg.Config;
+import com.arthenica.mobileffmpeg.FFmpeg;
 
 public class RecordingsList extends ArrayAdapter<VideoResult> {
     private Context context;
@@ -78,6 +80,8 @@ public class RecordingsList extends ArrayAdapter<VideoResult> {
             builder.setPositiveButton("Export", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"export video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
+                //using this to test converting video formats, ignore it
+                //int rc = FFmpeg.execute(" -i testvid1.mpeg testvid2.mp4");
             });
             builder.setNegativeButton("Delete", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"delete video placeholder", Toast.LENGTH_SHORT);

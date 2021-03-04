@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         String token = FirebaseInstanceId.getInstance().getToken();
-        Log.d("TOKEN", token);
+        //Log.d("TOKEN", token);
+            //the line above caused the app to crash, commented it out to work on other parts of the app
 
         Button usbButton = (Button) findViewById(R.id.usb_button);
         usbButton.setOnClickListener(v -> {

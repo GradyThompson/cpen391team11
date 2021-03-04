@@ -34,6 +34,8 @@ public class RecordingsActivity extends AppCompatActivity {
 
     private ArrayList<VideoResult> videoData = new ArrayList<VideoResult>();
 
+    private RecordingsArray recArray = new RecordingsArray();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

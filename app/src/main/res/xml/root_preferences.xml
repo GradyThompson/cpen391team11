@@ -4,20 +4,27 @@
     <PreferenceCategory app:title="@string/recordings_header">
 
         <ListPreference
-            app:title="@string/Severity_title"
-            app:key="severity_threshold"
-            app:useSimpleSummaryProvider="true"
-            app:defaultValue="3"
-            app:entries="@array/severity_threshold_entries"
-            app:entryValues="@array/severity_threshold_values"
-            />
-
-        <ListPreference
             app:defaultValue="2"
             app:entries="@array/max_time_entries"
             app:entryValues="@array/max_time_values"
             app:key="max_time"
             app:title="@string/Max_time_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="10"
+            app:entries="@array/min_time_entries"
+            app:entryValues="@array/min_time_values"
+            app:key="min_time"
+            app:title="@string/Min_time_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="14"
+            app:entries="@array/retention_time_entries"
+            app:entryValues="@array/retention_time_values"
+            app:key="retention_time"
+            app:title="@string/Retention_time_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
@@ -34,23 +41,16 @@
             android:layout_height="wrap_content"
             app:key="Physical_notifications"
             app:title="@string/Physical_notifications_title" />
-        <SwitchPreferenceCompat
-            app:key="Email_notifications"
-            app:title="@string/Email_notifications_title" />
 
-        <EditTextPreference
-            app:key="email_address"
-            app:title="@string/email_entry_title"
+        <ListPreference
+            app:title="@string/Severity_title"
+            app:key="severity_threshold"
             app:useSimpleSummaryProvider="true"
-            app:dependency="Email_notifications"/>
-        <SwitchPreferenceCompat
-            app:key="text_notifications"
-            app:title="@string/Text_notifications_title" />
-        <EditTextPreference
-            app:key="phone_number"
-            app:title="@string/phone_entry_title"
-            app:useSimpleSummaryProvider="true"
-            app:dependency="text_notifications"/>
+            app:defaultValue="3"
+            app:entries="@array/severity_threshold_entries"
+            app:entryValues="@array/severity_threshold_values"
+            />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
