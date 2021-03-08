@@ -29,11 +29,20 @@ import android.widget.VideoView;
 import androidx.appcompat.app.AlertDialog;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import com.arthenica.mobileffmpeg.Config;
 import com.arthenica.mobileffmpeg.FFmpeg;
+import com.arthenica.mobileffmpeg.FFprobe;
+
+import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS;
+import static com.arthenica.mobileffmpeg.Config.getPackageName;
+
 
 public class RecordingsList extends ArrayAdapter<VideoResult> {
     private Context context;
@@ -80,8 +89,48 @@ public class RecordingsList extends ArrayAdapter<VideoResult> {
             builder.setPositiveButton("Export", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"export video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
-                //using this to test converting video formats, ignore it
-                //int rc = FFmpeg.execute(" -i testvid1.mpeg testvid2.mp4");
+                //using this to test converting video formats, should be moved
+                //and adapted when downloading videos works
+
+                //At the moment, this converts an mpeg-2 file from the raw folder to an mp4 and
+                //plays it in the video view.
+                try {
+                    //the video stream code is used to retrieve a file from the res/raw folder
+                    //largely unnecessary in final implementation
+                    InputStream vid = context.getResources().openRawResource(R.raw.testvid1);
+                    File video = new File(context.getFilesDir(), "testvid1.mpeg");
+                    OutputStream vidout = new FileOutputStream(video);
+
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while((bytesRead = vid.read(buffer)) != -1) {
+                        vidout.write(buffer, 0, bytesRead);
+                    }
+
+                    //need to designate an mp4 file with a path to put the converted video
+                    File MP4vid = new File(context.getFilesDir(), "testvid2.mp4");
+
+                    //this command converts the video found in the first path to the one in the second
+                    String ffmepegCommand = String.format("-y -i %s %s", video.getAbsolutePath(), MP4vid.getAbsolutePath());
+
+                    int rc = FFmpeg.execute(ffmepegCommand);
+
+                    if (rc == RETURN_CODE_SUCCESS) {
+                        Log.i(Config.TAG, "success");
+                        Intent videoIntent = new Intent(parent.getContext(), VideoActivity.class);
+                        videoIntent.putExtra("vid", Uri.parse(MP4vid.getAbsolutePath()));
+                        videoIntent.putExtra("dt", "test mp4");
+                        context.startActivity(videoIntent);
+                    } else {
+                        Log.i(Config.TAG, "failure");
+                    }
+                    vid.close();
+                    vidout.close();
+
+                }
+                catch (IOException e) {
+                    Log.i(Config.TAG, "IO fail");
+                }
             });
             builder.setNegativeButton("Delete", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"delete video placeholder", Toast.LENGTH_SHORT);
