@@ -44,14 +44,25 @@ import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS;
 import static com.arthenica.mobileffmpeg.Config.getPackageName;
 
 
-public class RecordingsList extends ArrayAdapter<VideoResult> {
+public class RecordingsList extends ArrayAdapter<String> {
     private Context context;
     private ArrayList<VideoResult> VideoArray;
+    private RecordingsArray recArray;
+    private ArrayList<String> videoData;
 
+    /*
     public RecordingsList (Context context, int textViewResourceId, ArrayList<VideoResult> VideoArray) {
         super(context, textViewResourceId, VideoArray);
         this.context = context;
         this.VideoArray = VideoArray;
+    }
+    */
+    public RecordingsList (Context context, int textViewResourceId, ArrayList<String> VideoData, RecordingsArray recArray) {
+        super(context, textViewResourceId, VideoData);
+        this.context = context;
+        //this.VideoData = VideoArray;
+        this.recArray = recArray;
+        this.videoData = recArray.getVideoDataList();
     }
 
     @Override
@@ -60,11 +71,13 @@ public class RecordingsList extends ArrayAdapter<VideoResult> {
         View row = inflater.inflate(R.layout.list_row, parent, false);
 
         ImageView thumbnail = (ImageView) row.findViewById(R.id.thumbnail);
-        thumbnail.setImageResource(R.drawable.ic_launcher_foreground); //placeholder, should have video thumbnail
+        //thumbnail.setImageResource(R.drawable.ic_launcher_foreground); //placeholder, should have video thumbnail
+        thumbnail.setImageBitmap(recArray.getRecord(position).thumbnail);
         thumbnail.setVisibility(View.VISIBLE);
 
         TextView data = (TextView) row.findViewById(R.id.videoData);
-        data.setText((VideoArray.get(position).getDateTime()));
+        //data.setText((VideoArray.get(position).getDateTime()));
+        data.setText(videoData.get(position));
 
         ImageButton optionIcon = (ImageButton) row.findViewById(R.id.optionsIcon);
         //optionIcon.setVisibility(View.VISIBLE);
@@ -82,8 +95,13 @@ public class RecordingsList extends ArrayAdapter<VideoResult> {
                 toast.show();
 
                 Intent videoIntent = new Intent(parent.getContext(), VideoActivity.class);
+
+                /*
                 videoIntent.putExtra("vid", VideoArray.get(position).getVideo());
                 videoIntent.putExtra("dt", VideoArray.get(position).getDateTime());
+                 */
+                videoIntent.putExtra("vid", recArray.getRecord(position).uri);
+                videoIntent.putExtra("dt", videoData.get(position));
                 context.startActivity(videoIntent);
             });
             builder.setPositiveButton("Export", (dialog, which) -> {
