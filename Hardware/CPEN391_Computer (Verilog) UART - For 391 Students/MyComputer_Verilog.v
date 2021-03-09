@@ -165,6 +165,21 @@ module MyComputer_Verilog (
 	//PIR TEMP Wires 
 	wire PIR_output;
 	
+	//Camera
+	wire MIPI_pixel_clk;
+	wire unsigned [9:0] MIPI_pixel_D;
+	wire MIPI_refclk;
+	wire MIPI_reset;
+	wire MIPI_pixel_clk;
+	wire MIPI_pixel_HS;
+	wire MIPI_pixel_VS;
+	wire MIPI_chip_select;
+	wire MIPI_I2C_scl;
+	wire MIPI_I2C_sda;
+	wire camera_pwdwn;
+	wire camera_I2C_scl;
+	wire camera_I2C_sda;
+	
 	// Other temporary wires 
 	wire RESET_L_WIRE;
 	wire IO_Enable_L_WIRE;
@@ -365,17 +380,56 @@ module MyComputer_Verilog (
 				 
 				 // Real World Signals brought out to Header connections
 
-				 .BlueTooth_RxData 			(GPIO_1[22]),
-				 .BlueTooth_TxData 			(GPIO_1[21]),
+				 .BlueTooth_RxData 			(GPIO_0[22]),
+				 .BlueTooth_TxData 			(GPIO_0[21]),
 				 
-				 .WiFi_RxData 		(GPIO_1[18]),
-				 .WiFi_TxData 		(GPIO_1[17])
+				 .WiFi_RxData 		(GPIO_0[18]),
+				 .WiFi_TxData 		(GPIO_0[17])
+		);
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		// create an instance of the D8M camera
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		Camera Camera (
+			MIPI_pixel_D,
+			MIPI_pixel_clk,
+			MIPI_pixel_HS,
+			MIPI_pixel_VS,
+			clk,
+			reset_n,
+			
+			MIPI_reset,
+			MIPI_refclk,
+			MIPI_chip_select,
+			MIPI_I2C_scl,
+			MIPI_I2C_sda,
+			camera_pwdwn,
+			camera_I2C_scl,
+			camera_I2C_sda,
+			memory_address,
+			data_out,
+			write
 		);
 		
 		//PIR power, ground and output
-		assign GPIO_1[33] = 1'b0;
-		assign GPIO_1[34] = 1'b1;
-		assign PIR_output = GPIO_1[35];
+		assign GPIO_0[33] = 1'b0;
+		assign GPIO_0[34] = 1'b1;
+		assign PIR_output = GPIO_0[35];
+		
+		//Camera
+		assign MIPI_pixel_D = GPIO_1[12:3];
+		assign MIPI_pixel_clk = GPIO_1[1];
+		assign MIPI_pixel_HS = GPIO_1[22];
+		assign MIPI_pixel_VS = GPIO_1[20];
+		
+		assign GPIO_1[24] = MIPI_reset;
+		assign GPIO_1[18] = MIPI_refclk;
+		assign GPIO_1[23] = MIPI_chip_select;
+		assign GPIO_1[30] = MIPI_I2C_scl;
+		assign GPIO_1[31] = MIPI_I2C_sda;
+		assign GPIO_1[25] = camera_pwdwn;
+		assign GPIO_1[26] = camera_I2C_scl;
+		assign GPIO_1[27] = camera_I2C_sda;
 		
 		// Map 16 bit memory upper and lower data byte strobes to individual wires
 		
