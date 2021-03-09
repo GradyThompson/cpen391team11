@@ -11,9 +11,9 @@ TEST_CASE("1D DCT test 1", "[dct]") {
 }
 
 TEST_CASE("1D DCT Test 2", "[dct]") {
-	std::array<int16_t, 8> input = { 1, -2, 3, -4, 5, -6, -7, 0 };
+	std::array<int16_t, 8> input = { -76, -73, -67, -62, -58, -67, -64, -55};
 	std::array<int16_t, 8> output = { 0 };
-	std::array<int16_t, 8> expected = { -10, 6, 0, -9, 14, -4, 6, 9 };
+	std::array<int16_t, 8> expected = { -522, -30, -11, 0, 20, -12, 3, 4 };
 	dct_1d(input.data(), 1, output.data());
 	REQUIRE(output == expected);
 }

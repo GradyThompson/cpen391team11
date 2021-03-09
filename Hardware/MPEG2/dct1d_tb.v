@@ -13,19 +13,10 @@ module dct1d_tb();
 	begin
 		for (i = 7'd0; i < 7'd64; i = i + 7'd1) begin
 			if (testRAM[i] === solnRAM[i]) begin
-				$display("At time %0t, %0d == %0d", $time, testRAM[i], solnRAM[i]);
+				$display("At time %0t, %0x == %0x", $time, testRAM[i], solnRAM[i]);
 			end else begin
-				$error("At time %0t, %0d != %0d", $time, testRAM[i], solnRAM[i]);
+				$error("At time %0t, %0x != %0x", $time, testRAM[i], solnRAM[i]);
 			end
-		end
-	end
-	endtask
-
-	task clearmem;
-	begin
-		for (i = 7'd0; i < 7'd64; i = i + 7'd1) begin
-			testRAM[i] = 8'hxx;
-			solnRAM[i] = 8'hxx;
 		end
 	end
 	endtask
