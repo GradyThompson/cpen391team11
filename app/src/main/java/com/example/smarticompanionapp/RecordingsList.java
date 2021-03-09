@@ -1,4 +1,4 @@
-/*
+ /*
  * This class is used to fill in the rows of the list view in RecordingsActivity that represent videos
  * Takes as argument, in constructor the Recordings Activity context, textview resource id
  * and an ArrayList with strings consisting of the data about a video that we wish to display.
