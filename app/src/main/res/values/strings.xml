@@ -10,6 +10,7 @@
     <string name="Max_time_title">Maximum recording length</string>
     <string name="Min_time_title">Minimum recording length</string>
     <string name="Retention_time_title">Retain recordings for:</string>
+    <string name="bitrate_title">Video bitrate</string>
 
     <!-- Notification Preferences -->
     <string name="Push_notifications_title">Enable push notifications</string>

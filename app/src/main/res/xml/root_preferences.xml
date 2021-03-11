@@ -27,6 +27,14 @@
             app:title="@string/Retention_time_title"
             app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            app:defaultValue="1000"
+            app:entries="@array/bitrate_entries"
+            app:entryValues="@array/bitrate_values"
+            app:key="bitrate"
+            app:title="@string/bitrate_title"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/notifications_header">

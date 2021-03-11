@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -107,53 +108,23 @@ public class RecordingsList extends ArrayAdapter<String> {
             builder.setPositiveButton("Export", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"export video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
-                //using this to test converting video formats, should be moved
-                //and adapted when downloading videos works
 
-                //At the moment, this converts an mpeg-2 file from the raw folder to an mp4 and
-                //plays it in the video view.
-                try {
-                    //the video stream code is used to retrieve a file from the res/raw folder
-                    //largely unnecessary in final implementation
-                    InputStream vid = context.getResources().openRawResource(R.raw.testvid1);
-                    File video = new File(context.getFilesDir(), "testvid1.mpeg");
-                    OutputStream vidout = new FileOutputStream(video);
+                //trying to get file exportation to work, not yet functional
+                /*
+                File expFile = new File(recArray.getRecord(position).uri.getPath());
+                Intent shareFileInt = new Intent(Intent.ACTION_SEND);
 
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while((bytesRead = vid.read(buffer)) != -1) {
-                        vidout.write(buffer, 0, bytesRead);
-                    }
-
-                    //need to designate an mp4 file with a path to put the converted video
-                    File MP4vid = new File(context.getFilesDir(), "testvid2.mp4");
-
-                    //this command converts the video found in the first path to the one in the second
-                    String ffmepegCommand = String.format("-y -i %s %s", video.getAbsolutePath(), MP4vid.getAbsolutePath());
-
-                    int rc = FFmpeg.execute(ffmepegCommand);
-
-                    if (rc == RETURN_CODE_SUCCESS) {
-                        Log.i(Config.TAG, "success");
-                        Intent videoIntent = new Intent(parent.getContext(), VideoActivity.class);
-                        videoIntent.putExtra("vid", Uri.parse(MP4vid.getAbsolutePath()));
-                        videoIntent.putExtra("dt", "test mp4");
-                        context.startActivity(videoIntent);
-                    } else {
-                        Log.i(Config.TAG, "failure");
-                    }
-                    vid.close();
-                    vidout.close();
-
-                }
-                catch (IOException e) {
-                    Log.i(Config.TAG, "IO fail");
-                }
+                shareFileInt.setType(URLConnection.guessContentTypeFromName(expFile.getName()));
+                shareFileInt.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+ expFile.getAbsolutePath()));
+                shareFileInt.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                context.startActivity(Intent.createChooser(shareFileInt, "Share File"));
+                */
             });
             builder.setNegativeButton("Delete", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"delete video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
                 this.remove(this.getItem(position));
+                recArray.delete(position);
                 this.notifyDataSetChanged();
             });
 

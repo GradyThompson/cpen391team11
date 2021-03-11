@@ -44,11 +44,8 @@ public class Recording {
         if(obj != null && getClass() == obj.getClass()) {
             Recording other = (Recording) obj;
 
-            if (this.videoData.equals(other.videoData) && this.severity == other.severity
-                && this.thumbnail.equals(other.thumbnail) && this.uri.equals(other.uri)) {
-
-                return true;
-            }
+            return this.videoData.equals(other.videoData) && this.severity.equals(other.severity)
+                    && this.thumbnail.equals(other.thumbnail) && this.uri.equals(other.uri);
         }
         return false;
     }

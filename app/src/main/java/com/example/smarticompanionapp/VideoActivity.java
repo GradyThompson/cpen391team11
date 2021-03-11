@@ -17,11 +17,13 @@ public class VideoActivity extends AppCompatActivity {
         setContentView(R.layout.video_view);
 
         VideoView vid;
-        MediaController m;
+        MediaController m = new MediaController(this);
         vid = (VideoView) findViewById(R.id.videoView);
         Uri u = (Uri) getIntent().getExtras().get("vid");
         String s = (String) getIntent().getExtras().get("dt");
         vid.setVideoURI(u);
+        m.setAnchorView(vid);
+        vid.setMediaController(m);
         vid.start();
     }
 }
