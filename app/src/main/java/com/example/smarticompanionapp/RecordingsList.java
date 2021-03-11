@@ -92,11 +92,7 @@ public class RecordingsList extends ArrayAdapter<String> {
         optionIcon.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setNeutralButton("Play", (dialog, which) -> {
-                Toast toast = Toast.makeText(context.getApplicationContext(),"play video placeholder", Toast.LENGTH_SHORT);
-                toast.show();
-
                 Intent videoIntent = new Intent(parent.getContext(), VideoActivity.class);
-
                 /*
                 videoIntent.putExtra("vid", VideoArray.get(position).getVideo());
                 videoIntent.putExtra("dt", VideoArray.get(position).getDateTime());
