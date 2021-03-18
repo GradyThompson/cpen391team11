@@ -86,13 +86,13 @@ public class MainActivity extends AppCompatActivity {
 
         Button bluetoothButton = (Button) findViewById(R.id.bluetooth_button);
         bluetoothButton.setOnClickListener(v -> {
-            if (BluetoothAdapter.getDefaultAdapter() == null) {
-                Toast toast = Toast.makeText(this.getApplicationContext(),"Bluetooth Not Supported", Toast.LENGTH_SHORT);
-                toast.show();
-            } else {
+            //if (BluetoothAdapter.getDefaultAdapter() == null) {
+               // Toast toast = Toast.makeText(this.getApplicationContext(),"Bluetooth Not Supported", Toast.LENGTH_SHORT);
+               // toast.show();
+            //} else {
                 Intent bluetoothIntent = new Intent(MainActivity.this, BluetoothActivity.class);
                 startActivity(bluetoothIntent);
-            }
+            //}
         });
     }
 }
