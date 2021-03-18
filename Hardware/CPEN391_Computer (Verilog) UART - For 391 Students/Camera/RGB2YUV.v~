@@ -1,0 +1,16 @@
+module RGB2YUV (
+		input [7:0] R,
+		input [7:0] B,
+		input [7:0] G,
+		
+		output [7:0] Y,
+		output [7:0] U,
+		output [7:0] V
+	);
+	
+	assign Y = (16'd128 + 16'd76*R + 16'd129*G + 16'd25*B) >> 8'd8;
+	assign U = ((16'd128 - 16'd38*R - 16'd74*G + 16'd112*B) >> 8'd8) + 8'd128;
+	assign V = ((16'd128 + 16'd112*R - 16'd94*G - 16'd18*B) >> 8'd8) + 8'd128;
+	
+endmodule // RGB2YUV
+

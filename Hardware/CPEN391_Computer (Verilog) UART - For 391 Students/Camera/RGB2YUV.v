@@ -8,8 +8,9 @@ module RGB2YUV (
 		output [7:0] V
 	);
 	
-	assign Y = (8'd128 + 8'd66*R + 8'b129*G + 8'b25*B) >> 8'd8 + 8'd16;
-	assign U = (8'd128 - 8'd38*R - 8'b74*G + 8'b112*B) >> 8'd8 + 8'd16;
-	assign V = (8'd128 + 8'd112*R - 8'b94*G - 8'b18*B) >> 8'd8 + 8'd16;
+	assign Y = ((18'd306*R + 18'd601*G + 18'd117*B) >> 8'd10);
+	assign U = ((- 18'd173*R - 18'd339*G + 18'd511*B) >> 8'd10) + 8'd128;
+	assign V = ((18'd511*R - 18'd428*G - 18'd83*B) >> 8'd10) + 8'd128;
 	
-end module
+endmodule // RGB2YUV
+

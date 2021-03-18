@@ -20,4 +20,4 @@ module Camera (
 	);
 	
 	
-end module
+endmodule
