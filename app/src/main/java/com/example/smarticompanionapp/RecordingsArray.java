@@ -6,6 +6,9 @@
 
 package com.example.smarticompanionapp;
 
+import android.net.Uri;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -79,18 +82,24 @@ public class RecordingsArray {
         if (remove(recording) == 1) {
             //delete recording from storage
             //send signal to remote database to delete recording
+            Uri uri = recording.uri;
+            File delete = new File(uri.getPath());
+            if (delete.exists()) {
+                if (delete.delete()) {
+                    System.out.println("file deleted" + uri.getPath());
+                }
+                else {
+                    System.out.println("file not deleted" + uri.getPath());
+                }
+            }
             return 1;
         }
         return 0;
     }
 
     public int delete(int x) {
-        if (remove(x) == 1) {
-            //delete recording from storage
-            //send signal to remote database to delete recording
-            return 1;
-        }
-        return 0;
+
+        return delete(RecArray.get(x));
     }
 
     /*

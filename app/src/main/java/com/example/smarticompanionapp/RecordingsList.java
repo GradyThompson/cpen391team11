@@ -12,8 +12,11 @@
 package com.example.smarticompanionapp;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +30,10 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -106,21 +111,42 @@ public class RecordingsList extends ArrayAdapter<String> {
                 toast.show();
 
                 //trying to get file exportation to work, not yet functional
-                /*
-                File expFile = new File(recArray.getRecord(position).uri.getPath());
-                Intent shareFileInt = new Intent(Intent.ACTION_SEND);
+                String state = Environment.getExternalStorageState();
+                if (!Environment.MEDIA_MOUNTED.equals(state)) {
+                    Log.i("", "external storage not mounted");
+                }
 
-                shareFileInt.setType(URLConnection.guessContentTypeFromName(expFile.getName()));
-                shareFileInt.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+ expFile.getAbsolutePath()));
-                shareFileInt.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                context.startActivity(Intent.createChooser(shareFileInt, "Share File"));
-                */
+                    File expFile = new File(recArray.getRecord(position).uri.getPath());
+                    String fileName = expFile.getName();
+
+
+                    File newFile = new File(context.getExternalFilesDir(null), fileName);
+
+                try{
+                    InputStream in = new FileInputStream(expFile);
+                    OutputStream out = new FileOutputStream(newFile);
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+                    in.close();
+                    out.flush();
+                    out.close();
+                    Log.i("", "file exported");
+                    Toast success = Toast.makeText(context.getApplicationContext(),"exported video", Toast.LENGTH_SHORT);
+                    success.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             });
             builder.setNegativeButton("Delete", (dialog, which) -> {
                 Toast toast = Toast.makeText(context.getApplicationContext(),"delete video placeholder", Toast.LENGTH_SHORT);
                 toast.show();
                 this.remove(this.getItem(position));
                 recArray.delete(position);
+                videoData = recArray.getVideoDataList();
                 this.notifyDataSetChanged();
             });
 

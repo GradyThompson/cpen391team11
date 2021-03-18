@@ -3,4 +3,10 @@
     <external-path
         name="external_files"
         path="."/>
+    <cache-path
+        name="cache"
+        path="/"/>
+    <files-path
+        name="files"
+        path="/"/>
 </paths>
