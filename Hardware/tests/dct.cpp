@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 #include <mpeg2/dct.h>
 #include <array>
+#include <iostream>
 
 TEST_CASE("1D DCT test 1", "[dct]") {
 	std::array<int16_t, 8> input = { -40, 0, 25, 127, -2304, 12, 34, 5 };
@@ -16,6 +17,18 @@ TEST_CASE("1D DCT Test 2", "[dct]") {
 	std::array<int16_t, 8> expected = { -522, -30, -11, 0, 20, -12, 3, 4 };
 	dct_1d(input.data(), 1, output.data());
 	REQUIRE(output == expected);
+}
+
+TEST_CASE("1D IDCT test 1", "[dct]") {
+	std::array<int16_t, 8> input = { -76, -73, -67, -62, -58, -67, -64, -55};
+	std::array<int16_t, 8> output = { 0 };
+	std::array<uint8_t, 8> multipliers = { 8, 4, 4, 2, 8, 4, 4, 2 };
+	idct_1d(input.data(), 1, output.data());
+	dct_1d(output.data(), 1, output.data());
+	for (int8_t i = 0; i < 8; i++) {
+		output[i] /= multipliers[i];
+	}
+	REQUIRE(input == output);
 }
 
 TEST_CASE("Matrix Preprocessing Test", "[dct]") {
@@ -41,9 +54,41 @@ TEST_CASE("Matrix Preprocessing Test", "[dct]") {
 		 227,  251,  243,  334, 146, 231, 224, 330
 	};
 	
-	dct_preprocess(matrix.data());
+	std::array<uint16_t, 64> inverse = {};
+	
+	dct_preprocess(matrix.data(), inverse.data());
 	
 	REQUIRE(matrix == expected);
+}
+
+TEST_CASE("Matrix Preprocessing Test 2", "[dct]") {
+	std::array<uint16_t, 64> matrix = {
+		16, 11, 10, 16,  24,  40,  51,  61,
+		12, 12, 14, 19,  26,  58,  60,  55,
+		14, 13, 16, 24,  40,  57,  69,  56,
+		14, 17, 22, 29,  51,  87,  80,  62,
+		18, 22, 37, 56,  68, 109, 103,  77,
+		24, 35, 55, 64,  81, 104, 113,  92,
+		49, 64, 78, 87, 103, 121, 120, 101,
+		72, 92, 95, 98, 112, 100, 103,  99
+	};
+	
+	std::array<uint16_t, 64> expected = {
+		 511,  497,  452, 1023,  767, 1810, 2307, 3903,
+		 543,  768,  896, 1719, 1176, 3712, 3840, 4978,
+		 633,  832, 1024, 2172, 1810, 3648, 4416, 5068,
+		 895, 1538, 1991, 3711, 3263, 7874, 7240, 7935,
+		 575,  995, 1674, 3583, 2175, 4932, 4661, 4927,
+		1086, 2240, 3520, 5792, 3665, 6656, 7232, 8326,
+		2217, 4096, 4992, 7874, 4661, 7744, 7680, 9141,
+		4607, 8326, 8598, 12543, 7167, 9050, 9322, 12671
+	};
+	
+	std::array<uint16_t, 64> inverse = {};
+
+	dct_preprocess(matrix.data(), inverse.data());
+	
+	REQUIRE(inverse == expected);
 }
 
 TEST_CASE("DCT Quantization Test", "[dct]") {
@@ -82,6 +127,46 @@ TEST_CASE("DCT Quantization Test", "[dct]") {
 	};
 	
 	dct_sq(pixels.data(), matrix.data(), output.data());
+	
+	REQUIRE(output == expected);
+}
+
+TEST_CASE("IDCT Test", "[dct]") {
+	std::array<int16_t, 64> input = {
+		-25, -1, -5, 2, 2, 0, 0, 0,
+		  0, -1, -3, 0, 0, 0, 0, 0,
+		 -3,  0,  4, 0, 0, 0, 0, 0,
+		 -2,  0,  2, 0, 0, 0, 0, 0,
+		  0,  0,  0, 0, 0, 0, 0, 0,
+		 -1,  0,  0, 0, 0, 0, 0, 0,
+		  0,  0,  0, 0, 0, 0, 0, 0,
+		  0,  0,  0, 0, 0, 0, 0, 0
+	};
+
+	std::array<uint16_t, 64> matrix = {
+		 511,  497,  452, 1023,  767, 1810, 2307, 3903,
+		 543,  768,  896, 1719, 1176, 3712, 3840, 4978,
+		 633,  832, 1024, 2172, 1810, 3648, 4416, 5068,
+		 895, 1538, 1991, 3711, 3263, 7874, 7240, 7935,
+		 575,  995, 1674, 3583, 2175, 4932, 4661, 4927,
+		1086, 2240, 3520, 5792, 3665, 6656, 7232, 8326,
+		2217, 4096, 4992, 7874, 4661, 7744, 7680, 9141,
+		4607, 8326, 8598, 12543, 7167, 9050, 9322, 12671
+	};
+
+	std::array<uint8_t, 64> output = {};
+	std::array<uint8_t, 64> expected = {
+		 67, 59, 56,  75,  75, 70, 67, 75,
+		 66, 74, 71, 106, 106, 85, 82, 74,
+		 66, 79, 73, 113, 113, 87, 81, 68,
+		 66, 80, 74, 115, 115, 88, 82, 68,
+		 66, 80, 74, 115, 115, 88, 82, 68,
+		 84, 67, 61,  71,  71, 75, 69, 86,
+		 84, 72, 63,  78,  78, 77, 68, 80,
+		101, 73, 64,  63,  63, 78, 69, 97
+	};
+
+	idct_sq(input.data(), matrix.data(), output.data());
 	
 	REQUIRE(output == expected);
 }

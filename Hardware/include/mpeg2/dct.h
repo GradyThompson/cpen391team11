@@ -8,13 +8,18 @@ extern "C" {
 #endif
 
 // Preprocess Quantization Matrix for DCT
-void dct_preprocess(uint16_t* matrix);
+void dct_preprocess(uint16_t* matrix, uint16_t* inverse);
 
 // 1-D DCT approximation from https://doi.org/10.1007/s11042-019-08325-2
 void dct_1d(const int16_t* input, int8_t stride, int16_t* output);
 
 // 2-D DCT approximation and quantization
 void dct_sq(const uint8_t* input, const uint16_t* matrix, int16_t* output);
+
+void idct_1d(const int16_t* input, int8_t stride, int16_t* output);
+
+// 2-D IDCT approximation and quantization
+void idct_sq(const int16_t* input, const uint16_t* matrix, uint8_t* output);
 
 #ifdef __cplusplus
 }
