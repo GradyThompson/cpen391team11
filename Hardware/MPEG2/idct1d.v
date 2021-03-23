@@ -1,4 +1,4 @@
-module dct1d(clk, reset_n, rdy, en, addr, wren, data, q, rstart, wstart, stride);
+module idct1d(clk, reset_n, rdy, en, addr, wren, data, q, rstart, wstart, stride);
 	input clk, reset_n;     // Reset is active low
 	output [5:0] addr;      // RAM address bus
 	output reg wren;        // RAM write enable
@@ -65,6 +65,7 @@ module dct1d(clk, reset_n, rdy, en, addr, wren, data, q, rstart, wstart, stride)
 				next_addr = addr + saved_st;
 				next_cycle = cycle + 4'h1;
 				case (cycle)
+					4'h0: r0in = q;
 					4'h1: r0in = q;
 					4'h2: r1in = q;
 					4'h3: r2in = q;
@@ -80,33 +81,33 @@ module dct1d(clk, reset_n, rdy, en, addr, wren, data, q, rstart, wstart, stride)
 					end
 				endcase
 			end
-			3'h2: begin // Stage 1 of Approximate DCT
-				r0in = r7 + r0;
-				r1in = r6 + r1;
-				r2in = r5 + r2;
-				r3in = r4 + r3;
-				r4in = r4 - r3;
-				r5in = r5 - r2;
-				r6in = r6 - r1;
-				r7in = r7 - r0;
+			3'h2: begin // Stage 1 of Approximate IDCT
+				r0in = r0 + r4;
+				r1in = r0 - r4;
+				r2in = r6;
+				r3in = -r2;
+				r4in = r7;
+				r5in = r3;
+				r6in = r5 - r1;
+				r7in = -r5 - r1;
 				next_state = 3'h3;
 			end
-			3'h3: begin // Stage 2 of Approximate DCT
-				r0in = r0 + r3;
-				r1in = r1 + r2;
-				r2in = r2 - r1;
-				r3in = r3 - r0;
+			3'h3: begin // Stage 2 of Approximate IDCT
+				r0in = r0 - r3;
+				r1in = r1 - r2;
+				r2in = r1 + r2;
+				r3in = r0 + r3;
 				next_state = 3'h4;
 			end
-			3'h4: begin // Stage 3 of Approximate DCT
-				r0in = r0 + r1;
-				r1in = -(r6 + r7);
-				r2in = -r3;
-				r3in = r5;
-				r4in = r0 - r1;
-				r5in = r6 - r7;
-				r6in = r2;
-				r7in = r4;
+			3'h4: begin // Stage 3 of Approximate IDCT
+				r0in = r0 - r7;
+				r1in = r1 - r6;
+				r2in = r2 - r5;
+				r3in = r3 - r4;
+				r4in = r3 + r4;
+				r5in = r2 + r5;
+				r6in = r1 + r6;
+				r7in = r0 + r7;
 				next_state = 3'h5;
 				next_addr  = saved_ws;
 				next_cycle = 4'h0;

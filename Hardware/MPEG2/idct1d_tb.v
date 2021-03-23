@@ -1,4 +1,4 @@
-module dct1d_tb();
+module idct1d_tb();
 	wire [5:0] addr;      // RAM address bus
 	wire wren;            // RAM write enable
 	wire [15:0] data;     // RAM write data bus
@@ -7,11 +7,12 @@ module dct1d_tb();
 	reg [15:0] q;         // RAM read data bus
 	reg [15:0] testRAM [63:0];
 	reg [15:0] solnRAM [63:0];
+	reg [15:0] mults   [63:0];
 	reg [6:0] i;
 
 	task assertmem;
 	begin
-		for (i = 7'd0; i < 7'd64; i = i + 7'd1) begin
+		for (i = 7'd0; i < 7'd8; i = i + 7'd1) begin
 			if (testRAM[i] === solnRAM[i]) begin
 				$display("At time %0t, %0x == %0x", $time, testRAM[i], solnRAM[i]);
 			end else begin
@@ -21,7 +22,7 @@ module dct1d_tb();
 	end
 	endtask
 	
-	dct1d DCT1D(.clk(clk), .reset_n(reset_n), .addr(addr), .wren(wren), .data(data), .rdy(ready), .en(en), .q(q), .rstart(6'h0), .wstart(6'h0), .stride(6'h1));
+	idct1d DUT(.clk(clk), .reset_n(reset_n), .addr(addr), .wren(wren), .data(data), .rdy(ready), .en(en), .q(q), .rstart(6'h0), .wstart(6'h0), .stride(6'h1));
 
 	always @(posedge clk) begin
 		if (wren) begin
@@ -35,7 +36,7 @@ module dct1d_tb();
 	initial begin
 		#10;
 		$readmemh("test1.memh", testRAM);
-		$readmemh("test1.soln.memh", solnRAM);
+		$readmemh("idct1.memh", solnRAM);
 		reset_n = 1'b0;
 		clk = 1'b0;
 		#5;
