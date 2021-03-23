@@ -20,6 +20,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
+import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -82,8 +83,8 @@ public class SettingsActivity extends AppCompatActivity {
         private ListPreference minTime;
         private ListPreference retTime;
         private ListPreference bitrate;
-        private SwitchPreference pushNotif;
-        private SwitchPreference physNotif;
+        private SwitchPreferenceCompat pushNotif;
+        private SwitchPreferenceCompat physNotif;
         private ListPreference severityThres;
         private SettingsResult settings;
 

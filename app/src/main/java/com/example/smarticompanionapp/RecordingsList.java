@@ -11,12 +11,16 @@
 
 package com.example.smarticompanionapp;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,7 +96,6 @@ public class RecordingsList extends ArrayAdapter<String> {
 
         /*
          * This is used to generate the dialog box with play/export/delete options
-         * Currently just displays toasts that buttons have been pressed
          */
         optionIcon.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -107,38 +110,53 @@ public class RecordingsList extends ArrayAdapter<String> {
                 context.startActivity(videoIntent);
             });
             builder.setPositiveButton("Export", (dialog, which) -> {
-                Toast toast = Toast.makeText(context.getApplicationContext(),"export video placeholder", Toast.LENGTH_SHORT);
-                toast.show();
 
-                //trying to get file exportation to work, not yet functional
                 String state = Environment.getExternalStorageState();
                 if (!Environment.MEDIA_MOUNTED.equals(state)) {
                     Log.i("", "external storage not mounted");
                 }
 
-                    File expFile = new File(recArray.getRecord(position).uri.getPath());
-                    String fileName = expFile.getName();
+                File expFile = new File(recArray.getRecord(position).uri.getPath());
+                String fileName = expFile.getName();
 
+                ContentValues valuesvideos;
 
-                    File newFile = new File(context.getExternalFilesDir(null), fileName);
+                valuesvideos = new ContentValues();
+                valuesvideos.put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/" + "SmartIRecordings");
+                valuesvideos.put(MediaStore.Video.Media.TITLE, fileName);
+                valuesvideos.put(MediaStore.Video.Media.DISPLAY_NAME, fileName);
+                valuesvideos.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+                valuesvideos.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000.0);
+                valuesvideos.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis());
+                valuesvideos.put(MediaStore.Video.Media.IS_PENDING, 1);
+                ContentResolver resolver = context.getContentResolver();
+                Uri collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+                Uri uriSavedVideo = resolver.insert(collection, valuesvideos);
 
-                try{
-                    InputStream in = new FileInputStream(expFile);
-                    OutputStream out = new FileOutputStream(newFile);
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, bytesRead);
+                ParcelFileDescriptor pfd;
+
+                try {
+                    pfd = context.getContentResolver().openFileDescriptor(uriSavedVideo, "w");
+                    FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor());
+
+                    FileInputStream in = new FileInputStream(expFile);
+
+                    byte[] buff = new byte[8192];
+                    int len;
+                    while ((len = in.read(buff)) > 0) {
+                        out.write(buff, 0, len);
                     }
-                    in.close();
-                    out.flush();
                     out.close();
-                    Log.i("", "file exported");
-                    Toast success = Toast.makeText(context.getApplicationContext(),"exported video", Toast.LENGTH_SHORT);
+                    in.close();
+                    pfd.close();
+                    Toast success = Toast.makeText(context.getApplicationContext(),"Recording successfully saved to photos", Toast.LENGTH_SHORT);
                     success.show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                valuesvideos.clear();
+                valuesvideos.put(MediaStore.Video.Media.IS_PENDING, 0);
+                context.getContentResolver().update(uriSavedVideo, valuesvideos, null, null);
 
             });
             builder.setNegativeButton("Delete", (dialog, which) -> {
