@@ -55,15 +55,6 @@ public class RecordingsActivity extends AppCompatActivity {
             Intent settingsIntent = new Intent(RecordingsActivity.this, SettingsActivity.class);
             startActivity(settingsIntent);
         });
-        /*
-        Bundle b = getIntent().getExtras();
-
-        if (b != null) {
-            videoData.addAll((ArrayList<VideoResult>)b.get("videos"));
-        }
-        */
-        //recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, videoData);
-
 
         //will need to populate list with data on runtime, probably put up a loading screen
         //while retrieving recordings
