@@ -156,35 +156,11 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     settings.setSeverityThres((Integer) newValue);
-                    serverRequest(settings);
                     return true;
                 }
             });
 
             return inflater.inflate(R.layout.settings_activity, container, false);
-        }
-        private void serverRequest(SettingsResult settings) {
-            final Gson g = new Gson();
-            final JSONObject object = new JSONObject();
-            try {
-                object.put("Settings", settings);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            final RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
-            String url = "";
-
-            final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) { }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    System.out.println(error);
-                }
-            });
-            queue.add(jsonObjectRequest);
         }
     }
 }
