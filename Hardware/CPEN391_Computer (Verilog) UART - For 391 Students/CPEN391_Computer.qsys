@@ -54,6 +54,30 @@
          type = "String";
       }
    }
+   element CPEN391_Computer
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element CPEN391_Computer
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element CPEN391_Computer
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
    element CPEN_Computer_V1
    {
       datum _originalDeviceFamily
@@ -256,8 +280,16 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
+      }
+   }
+   element SDRAM.s1
+   {
+      datum baseAddress
+      {
+         value = "0";
+         type = "String";
       }
    }
    element Slider_Switches
@@ -312,6 +344,19 @@
          type = "boolean";
       }
    }
+   element frame_buffer_0
+   {
+      datum _sortIndex
+      {
+         value = "19";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
+   }
 }
 ]]></parameter>
  <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
@@ -333,6 +378,11 @@
  <parameter name="timeStamp" value="0" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
+ <interface
+   name="frame_buffer"
+   internal="frame_buffer_0.conduit_end"
+   type="conduit"
+   dir="end" />
  <interface
    name="hex0_1"
    internal="HEX0_1.external_connection"
@@ -1198,6 +1248,16 @@
   <parameter name="other_boards" value="None" />
  </module>
  <module name="bit_flipper_0" kind="bit_flipper" version="1.0" enabled="1" />
+ <module name="frame_buffer_0" kind="frame_buffer" version="1.0" enabled="1" />
+ <connection
+   kind="avalon"
+   version="15.0"
+   start="frame_buffer_0.avalon_master"
+   end="SDRAM.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
  <connection
    kind="avalon"
    version="15.0"
@@ -1544,6 +1604,11 @@
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
+   end="frame_buffer_0.clock" />
+ <connection
+   kind="clock"
+   version="15.0"
+   start="System_PLL.sys_clk"
    end="ARM_A9_HPS.f2h_axi_clock" />
  <connection
    kind="clock"
@@ -1590,6 +1655,11 @@
    end="JTAG_UART_for_ARM_1.irq">
   <parameter name="irqNumber" value="24" />
  </connection>
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
+   end="frame_buffer_0.Reset" />
  <connection
    kind="reset"
    version="15.0"
@@ -1675,6 +1745,11 @@
    version="15.0"
    start="ARM_A9_HPS.h2f_reset"
    end="Onchip_SRAM.reset1" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="System_PLL.reset_source"
+   end="frame_buffer_0.Reset" />
  <connection
    kind="reset"
    version="15.0"
