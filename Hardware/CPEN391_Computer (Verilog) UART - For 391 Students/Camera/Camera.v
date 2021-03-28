@@ -100,9 +100,9 @@ module Camera (
 	
 	assign data = ({64{Y_ready}} & Ys) | ({64{U_ready}} & Us) | ({64{V_ready}} & Vs);
 	
-	assign wraddress = ({16{Y_ready}} & (16'd640*row + col)) | 
-							({16{U_ready}} & (16'd640*16'd480 + 16'd640*row + col)) | 
-							({16{V_ready}} & (16'd640*16'd480 + 16'd640*16'd120 + 16'd640*row + col));
+	assign wraddress = ({16{Y_ready}} & ((16'd640*row + col)>>6)) | 
+							({16{U_ready}} & ((16'd640*16'd480 + 16'd640*row + col)>>6)) | 
+							({16{V_ready}} & ((16'd640*16'd480 + 16'd640*16'd120 + 16'd640*row + col)>>6));
 						
 	RGB2YUV rgb_to_yuv (RED, BLUE, GREEN, Y, U, V);
 	
