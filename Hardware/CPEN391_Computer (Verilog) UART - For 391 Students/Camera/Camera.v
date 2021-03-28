@@ -30,31 +30,16 @@ module Camera (
 	//=============================================================================
 
 
-	wire	[15:0]SDRAM_RD_DATA;
-	wire			DLY_RST_0;
-	wire			DLY_RST_1;
-	wire			DLY_RST_2;
-
-	wire			SDRAM_CTRL_CLK;
-	wire        D8M_CK_HZ ; 
-	wire        D8M_CK_HZ2 ; 
-	wire        D8M_CK_HZ3 ; 
-
 	wire [7:0] RED   ; 
 	wire [7:0] GREEN  ; 
 	wire [7:0] BLUE 		 ; 
 
-	wire        READ_Request ;
-	wire 	[7:0] B_AUTO;
-	wire 	[7:0] G_AUTO;
-	wire 	[7:0] R_AUTO;
-
 	wire        I2C_RELEASE ;  
-	wire        AUTO_FOC ; 
 	wire        CAMERA_I2C_SCL_MIPI ; 
 	wire        CAMERA_I2C_SCL_AF;
 	wire        CAMERA_MIPI_RELAESE ;
 	wire        MIPI_BRIDGE_RELEASE ;  
+	wire READ_Request;
 	
 	reg [9:0] row, col;
 	wire [7:0] Y, U, V;
@@ -65,6 +50,8 @@ module Camera (
 	// Structural coding
 	//=======================================================
 
+	assign READ_Request = 1'b1;
+	
 	//------ MIPI BRIGE & CAMERA RESET  --
 	assign CAMERA_PWDN_n  = 1; 
 	assign MIPI_CS_n      = 0; 
@@ -85,26 +72,18 @@ module Camera (
 								 .CAMERA_I2C_SDA    ( CAMERA_I2C_SDA ),
 								 .CAMERA_I2C_RELAESE( CAMERA_MIPI_RELAESE )
 					 );
-					 
-	//------MIPI REF CLOCK  --
-	pll_test pll_ref(
-								 .inclk0 ( CLOCK3_50 ),
-								 .areset ( ~reset   ),
-								 .c0( MIPI_REFCLK    ) //20Mhz
-
-		 );
 		 
 	//------ CMOS CCD_DATA TO RGB_DATA -- 
-
+	
 	RAW2RGB_J				u4	(	
-								.RST          ( VGA_VS ),
-								.iDATA        ( SDRAM_RD_DATA[9:0] ),
+								.RST          ( MIPI_PIXEL_VS ),
+								.iDATA        ( MIPI_PIXEL_D ),
 
 								//-----------------------------------
-								.VGA_CLK      ( VGA_CLK ),
+								.VGA_CLK      ( MIPI_PIXEL_CLK ),
 								.READ_Request ( READ_Request ),
-								.VGA_VS       ( VGA_VS ),	
-								.VGA_HS       ( VGA_HS ) , 
+								.VGA_VS       ( MIPI_PIXEL_VS ),	
+								.VGA_HS       ( MIPI_PIXEL_HS ) , 
 											
 								.oRed         ( RED  ),
 								.oGreen       ( GREEN),
@@ -145,14 +124,14 @@ module Camera (
 	
 	always @(row, col) begin
 		if (row[0] == 1'b0) begin
-			Ys[col[2:0]*8 + 7:col[2:0]*8] <= Y;
+			Ys <= Y << 64'd8*col[2:0];
 			if (col[0] == 1'b0) begin
-				Us[col[3:1]*8 + 7:col[3:1]*8] <= U;
+				Us <= U << 64'd8*col[3:1];
 			end
-		else begin
-			Ys[col[2:0]*8 + 7:col[2:0]*8] <= Y;
+		end else begin
+			Ys <= Y << 64'd8*col[2:0];
 			if (col[0] == 1'b0) begin
-				Vs[col[3:1]*8 + 7:col[3:1]*8] <= V;
+				Vs <= V << 64'd8*col[3:1];
 			end
 		end
 	end
