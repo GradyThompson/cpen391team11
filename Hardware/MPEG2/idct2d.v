@@ -1,11 +1,10 @@
-module idct2d(clk, reset_n, rdy, en, iaddr, idata, iwren, maddr, mq, waddr, wdata, wwren);
+module idct2d(clk, reset_n, rdy, en, iaddr, idata, iwren, mq, waddr, wdata, wwren);
 	input clk, reset_n;  // Reset is active low
 	output reg rdy;      // Ready signal
 	input  en;           // Enable signal
 	input  [5:0] iaddr;  // Input address bus
 	input  [7:0] idata;  // Input data bus
 	input  iwren;        // Input write enable
-	output reg [5:0] maddr;  // Matrix address bus
 	input  [15:0] mq;    // Matrix data bus
 	output [5:0] waddr;  // Output address bus
 	output [15:0] wdata; // Output data bus
@@ -51,7 +50,6 @@ module idct2d(clk, reset_n, rdy, en, iaddr, idata, iwren, maddr, mq, waddr, wdat
 			3'h0: begin // Reset state
 				rdy = 1'b1;
 				if (iwren) begin
-					maddr = iaddr;
 					ram_data = biased_mul[23:8];
 					ram_wren = 1'b1;
 				end
