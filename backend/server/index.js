@@ -95,17 +95,15 @@ app.post('/save', (req, response) => {
 	}
 });
 
-app.get('/folder/{email}', (req, response) => {
-
-});
-
-app.get('/file/{email}/date', (req, response) => {
+app.get('/getVid', (req, response) => {
+	var fileDB = client.db("smarti").collection("file");
+	fileDB.find({}, {projection: {_id: 0}}).toArray(function(error, documents) {
+		if (error) throw error;
+	
+		response.send(documents);
+	});
 	
 });
-
-
-
-
 
 
 
