@@ -5,7 +5,10 @@
 
 package com.example.smarticompanionapp;
 
+import android.content.ContentResolver;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;

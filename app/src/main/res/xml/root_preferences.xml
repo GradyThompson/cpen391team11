@@ -41,10 +41,12 @@
 
         <SwitchPreferenceCompat
             app:key="Push_notifications"
-            app:title="@string/Push_notifications_title" />
+            app:title="@string/Push_notifications_title"
+            app:defaultValue="true"/>
 
         <SwitchPreferenceCompat
             android:id="@+id/switchPreferenceCompat"
+            app:defaultValue="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:key="Physical_notifications"
