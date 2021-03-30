@@ -15,6 +15,7 @@ import com.arthenica.mobileffmpeg.Config;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.storage.FirebaseStorage;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,7 +40,7 @@ public class RecordingsActivity extends AppCompatActivity {
 
     private RecordingsList recordingsList;
 
-    private ArrayList<VideoResult> videoData = new ArrayList<VideoResult>();
+    private ArrayList<VideoResult> videoData = new ArrayList<>();
 
     private RecordingsArray recArray = new RecordingsArray();
 
@@ -71,15 +72,20 @@ public class RecordingsActivity extends AppCompatActivity {
                 vidout.write(buffer, 0, bytesRead);
             }
 
-            for (int x = 0; x <= 20; x++){
+            videoData = getIntent().getParcelableArrayListExtra("videos");
+
+            for (int x = 0; x < videoData.size(); x++){
                 //videoData.add(new VideoResult(null, "test" + x));
-                recArray.add(new Recording("date "+ x, (double) x, "vidLength "+ x, Uri.parse(video.getAbsolutePath())));
+                Uri uri = videoData.get(x).getVideo();
+                recArray.add(new Recording("date "+ x, (double) x, "vidLength "+ x, uri));
             }
         } catch (IOException e) {
             Log.i(Config.TAG, "IO fail");
         }
 
         recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, recArray.getVideoDataList(), recArray);
+        Log.d("TAG", recArray.getVideoData(0));
+        System.out.println(recArray.getRecord(0).uri);
 
         ListView recordListView = (ListView) findViewById(R.id.recordings_list_view);
 

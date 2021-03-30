@@ -10,6 +10,7 @@ package com.example.smarticompanionapp;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -23,15 +24,18 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,21 +61,32 @@ public class MainActivity extends AppCompatActivity {
         Button wifiButton = (Button) findViewById(R.id.wifi_button);
         wifiButton.setOnClickListener(v -> {
             final Gson g = new Gson();
-            final JSONObject object = new JSONObject();
+            final JSONArray object = new JSONArray();
             final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url = "";
+            String url = "http://18.222.192.144:3000/getVid";
 
-            final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
-                    new Response.Listener<JSONObject>() {
+            final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, object,
+                    new Response.Listener<JSONArray>() {
                         @Override
-                        public void onResponse(JSONObject response) {
-                            List<VideoResult> videoList;
+                        public void onResponse(JSONArray response) {
+                            ArrayList<VideoResult> videoList = new ArrayList<>();
                             try {
-                                videoList = Arrays.asList(g.fromJson(response.get("").toString(), VideoResult[].class));
+                                Log.d("JsonArray", response.toString());
+                                for (int i = 0; i < response.length(); i++) {
+                                    JSONObject jresponse = response.getJSONObject(i);
+                                    Uri uri = Uri.parse(jresponse.get("Uri").toString());
+                                    String date = jresponse.get("Date").toString();
+                                    System.out.println(uri);
+                                    System.out.println(date);
+                                    videoList.add(new VideoResult(uri, date));
+                                }
+                                //videoList = Arrays.asList(g.fromJson(response.get("").toString(), VideoResult[].class));
                                 Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
-                                recordingsIntent.putExtra("videos", (Parcelable) videoList);
+                                recordingsIntent.putParcelableArrayListExtra("videos", (ArrayList<? extends Parcelable>) videoList);
                                 startActivity(recordingsIntent);
+                                Log.d("GETREQUEST", "successful");
                             } catch (JSONException e) {
+                                Log.d("GETREQUEST", "didn't go through");
                                 e.printStackTrace();
                             }
                         }

@@ -107,6 +107,7 @@ public class RecordingsList extends ArrayAdapter<String> {
                  */
                 videoIntent.putExtra("vid", recArray.getRecord(position).uri);
                 videoIntent.putExtra("dt", videoData.get(position));
+                //System.out.println(recArray.getRecord(position).uri);
                 context.startActivity(videoIntent);
             });
             builder.setPositiveButton("Export", (dialog, which) -> {

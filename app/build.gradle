@@ -45,6 +45,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.6.0')
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-storage'
 
     implementation 'com.arthenica:mobile-ffmpeg-full:4.4'
 
