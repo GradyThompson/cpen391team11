@@ -40,12 +40,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:constantSize="false"
 
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="28dp"
             android:background="?android:selectableItemBackground"
             android:contentDescription="@string/settings_button"
-            android:src="@drawable/ic_settings_icon"
+            app:srcCompat="@drawable/ic_settings_icon"
             app:layout_constraintBottom_toTopOf="@+id/recordings_list_view"
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
             app:layout_constraintTop_toTopOf="@+id/toolbar" />

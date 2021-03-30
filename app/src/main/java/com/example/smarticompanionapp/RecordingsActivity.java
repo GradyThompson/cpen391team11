@@ -49,9 +49,11 @@ public class RecordingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recordings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Recordings");
         setSupportActionBar(toolbar);
 
         ImageButton settingsButton = (ImageButton) findViewById(R.id.settingsButton);
+        settingsButton.setVisibility(View.VISIBLE);
         settingsButton.setOnClickListener(view -> {
             Intent settingsIntent = new Intent(RecordingsActivity.this, SettingsActivity.class);
             startActivity(settingsIntent);
