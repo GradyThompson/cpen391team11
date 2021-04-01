@@ -42,6 +42,13 @@ public class Recording {
         thumbnail = ThumbnailUtils.createVideoThumbnail(uri.toString(), MediaStore.Video.Thumbnails.MICRO_KIND);
     }
 
+    public Recording() {
+        videoData = "N/a";
+        severity = -.1;
+        uri = null;
+        thumbnail = null;
+    }
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if(obj != null && getClass() == obj.getClass()) {
