@@ -3,8 +3,8 @@ module idct2d_tb();
 	reg clk, reset_n, en;
 	wire rdy, wwren;
 	reg  iwren;
-	reg  [5:0] iaddr;
-	wire [5:0] maddr, waddr;
+	reg  [5:0] iaddr, maddr;
+	wire [5:0] waddr;
 	reg  [7:0] idata;
 	reg  [15:0] mq;
 	wire [15:0] wdata;
@@ -27,11 +27,7 @@ module idct2d_tb();
 	end
 	endtask
 
-	idct2d DUT(.clk(clk), .reset_n(reset_n), .rdy(rdy), .en(en), .iaddr(iaddr), .idata(idata), .iwren(iwren), .maddr(maddr), .mq(mq), .waddr(waddr), .wdata(wdata), .wwren(wwren));
-
-	always @(*) begin
-		mq = matrix[iaddr];
-	end
+	idct2d DUT(.clk(clk), .reset_n(reset_n), .rdy(rdy), .en(en), .iaddr(iaddr), .idata(idata), .iwren(iwren), .mq(mq), .waddr(waddr), .wdata(wdata), .wwren(wwren));
 
 	always @(posedge clk) begin
 		if (wwren) begin
@@ -58,11 +54,17 @@ module idct2d_tb();
 		if (!rdy) begin
 			$error("Not ready at time %0t!", $time);
 		end
+		#5;
+		clk = 1'b1;
+		#5;
+		clk = 1'b0;
+		#5;
 		for (i = 7'd0; i < 7'd64; i = i + 7'd1) begin
 			iaddr = i;
 			idata = inRAM[i];
+			mq    = matrix[i];
 			iwren = 1'b1;
-			if (inRAM[i] !== 8'b0) begin
+			if (inRAM[i] != 1'b0) begin
 				#5;
 				clk = 1'b1;
 				#5;

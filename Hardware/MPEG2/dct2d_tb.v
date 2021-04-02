@@ -3,7 +3,7 @@ module dct2d_tb();
 	reg clk, reset_n, en;
 	wire rdy, wwren;
 	wire [5:0] iaddr, maddr, waddr;
-	reg  [7:0] iq;
+	reg  [15:0] iq;
 	reg  [15:0] mq;
 	wire [15:0] wdata;
 
@@ -27,15 +27,12 @@ module dct2d_tb();
 
 	dct2d DUT(.clk(clk), .reset_n(reset_n), .rdy(rdy), .en(en), .iaddr(iaddr), .iq(iq), .maddr(maddr), .mq(mq), .waddr(waddr), .wdata(wdata), .wwren(wwren));
 
-	always @(*) begin
-		iq = inRAM[iaddr];
-		mq = matrix[maddr];
-	end
-
 	always @(posedge clk) begin
 		if (wwren) begin
 			testRAM[waddr] = wdata;
 		end
+		iq = {8'b0, inRAM[iaddr]} - 16'd128;
+		mq = matrix[maddr];
 	end
 
 	initial begin
