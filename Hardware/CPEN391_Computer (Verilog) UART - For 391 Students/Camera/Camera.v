@@ -19,10 +19,15 @@ module Camera (
 		input 		          		CLOCK2_50,
 		input 		          		CLOCK3_50,
 	
-		//////////// SDRAM //////////
-		output [63:0] data,
-		output [15:0] wraddress,
-		output wren
+		//////////// FRAME BUFFER 1 //////////
+		output [39:0] data1,
+		output [15:0] wraddress1,
+		output wren1,
+		
+		//////////// FRAME BUFFER 1 //////////
+		output [143:0] data2,
+		output [12:0] wraddress2,
+		output wren2
 	);
 	
 	//=============================================================================
@@ -43,8 +48,19 @@ module Camera (
 	
 	reg [9:0] row, col;
 	wire [7:0] Y, U, V;
-	reg [63:0] Ys, Us, Vs;
-	wire Y_ready, U_ready, V_ready;
+	reg [39:0] Ys;
+	reg [143:0] Us, Vs;
+	wire Y_ready, U1_ready, U2_ready, V_ready;
+	
+	wire [15:0] Y_addr;
+	wire [5:0] Y_data_pos;
+	
+	wire [15:0] U_addr;
+	wire U_frame_buffer_num;
+	wire [7:0] U_data_pos;
+	
+	wire [12:0] V_addr;
+	wire [7:0] V_data_pos;
 	
 	//=======================================================
 	// Structural coding
@@ -92,19 +108,34 @@ module Camera (
 
 								);
 								
-	assign Y_ready = col[2:0] == 3'b111;
-	assign U_ready = (row[0] == 1'b0) && (col[3:0] == 4'b1110);
-	assign V_ready = (row[0] == 1'b1) && (col[3:0] == 4'b1110);
-								
-	assign wren = Y_ready || U_ready || V_ready;
-	
-	assign data = ({64{Y_ready}} & Ys) | ({64{U_ready}} & Us) | ({64{V_ready}} & Vs);
-	
-	assign wraddress = ({16{Y_ready}} & ((16'd640*row + col)>>6)) | 
-							({16{U_ready}} & ((16'd640*16'd480 + 16'd640*row + col)>>6)) | 
-							({16{V_ready}} & ((16'd640*16'd480 + 16'd640*16'd120 + 16'd640*row + col)>>6));
-						
 	RGB2YUV rgb_to_yuv (RED, BLUE, GREEN, Y, U, V);
+	
+	/*
+		Writes when the data position is at the end (therefore when all data is available)
+		Y only writes on even columns
+		U only writes on odd columns and rows
+		V only writes on odd columns and even rows
+	*/
+	assign Y_ready = Y_data_pos == 6'd32;
+	assign U1_ready = ((U_data_pos == 6'd32) && !U_frame_buffer_num) && (col[0] == 1'b0) && (row[0] == 1'b0);
+	assign U2_ready = ((U_data_pos == 8'd136) && U_frame_buffer_num) && (col[0] == 1'b0) && (row[0] == 1'b0);
+	assign V_ready = (V_data_pos == 8'd136) && (col[0] == 1'b0) && (row[0] == 1'b1);
+								
+	assign wren1 = Y_ready || U1_ready;
+	assign data1 = ({40{Y_ready}} & Ys) | ({40{U1_ready}} & Us);
+	assign wraddress1 = ({40{Y_ready}} & Y_addr) | ({40{U1_ready}} & U_addr);
+		
+		
+	assign wren2 = U2_ready || V_ready;
+	assign data2 = ({144{U2_ready}} & Us) | ({144{V_ready}} & Vs);
+	assign wraddress2 = ({144{U2_ready}} & U_addr) | ({144{V_ready}} & V_addr);
+	
+	XY2ADDRESS xy_to_addr(	row, col, 2'b00, U_frame_buffer_num,
+									Y_addr, Y_data_pos, U_addr, U_data_pos, V_addr, V_data_pos);
+		
+	wire [15:0] Y_addr;
+	wire Y_frame_buffer_num;
+	wire [7:0] Y_data_pos;
 	
 	always @(posedge MIPI_PIXEL_CLK) begin
 		if (!RESET_N) begin
@@ -122,17 +153,28 @@ module Camera (
 		end
 	end
 	
-	always @(row, col) begin
-		if (row[0] == 1'b0) begin
-			Ys <= Y << 64'd8*col[2:0];
-			if (col[0] == 1'b0) begin
-				Us <= U << 64'd8*col[3:1];
+	always @(Y_data_pos) begin
+		if (Y_data_pos == 6'd0) begin
+			Ys = {40{1'b0}};
+		end
+		Ys <= Ys | ((40'd1*Y) << Y_data_pos);
+	end
+	
+	always @(U_data_pos) begin
+		if ((col[0] == 1'b0) && (row[0] == 1'b0)) begin
+			if (U_data_pos == 7'd0) begin
+				Us = {144{1'b0}};
 			end
-		end else begin
-			Ys <= Y << 64'd8*col[2:0];
-			if (col[0] == 1'b0) begin
-				Vs <= V << 64'd8*col[3:1];
+			Us <= Us | ((144'd1*U) << U_data_pos);
+		end
+	end
+	
+	always @(V_data_pos) begin
+		if ((col[0] == 1'b0) && (row[0] == 1'b1)) begin
+			if (Y_data_pos == 7'd0) begin
+				Vs = {144{1'b0}};
 			end
+			Vs <= Vs | ((144'd1*V) << V_data_pos);
 		end
 	end
 endmodule
