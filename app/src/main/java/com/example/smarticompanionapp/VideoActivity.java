@@ -18,7 +18,6 @@ import com.google.firebase.storage.StorageReference;
 public class VideoActivity extends AppCompatActivity {
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageRef = storage.getReference();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,25 +25,12 @@ public class VideoActivity extends AppCompatActivity {
         setContentView(R.layout.video_view);
 
         VideoView vid;
-        Uri u;
         MediaController m = new MediaController(this);
         vid = (VideoView) findViewById(R.id.videoView);
 
-        Uri url = (Uri) getIntent().getExtras().get("vid");
-        StorageReference ref = storage.getReferenceFromUrl(url.toString());
-        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                // Got the download URL for 'users/me/profile.png'
-                vid.setVideoURI(uri);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
+        Uri u = (Uri) getIntent().getExtras().get("vid");
         String s = (String) getIntent().getExtras().get("dt");
+        vid.setVideoURI(u);
         vid.setMediaController(m);
         m.setAnchorView(vid);
 

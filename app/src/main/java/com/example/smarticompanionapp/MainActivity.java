@@ -8,6 +8,7 @@
 
 package com.example.smarticompanionapp;
 
+import android.app.DownloadManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -32,9 +34,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +53,8 @@ import java.util.List;
 import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity {
+
+    FirebaseStorage storage = FirebaseStorage.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,18 +87,40 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("JsonArray", response.toString());
                                 for (int i = 0; i < response.length(); i++) {
                                     JSONObject jresponse = response.getJSONObject(i);
-                                    Uri uri = Uri.parse(jresponse.get("Uri").toString());
+                                    String url = jresponse.get("Uri").toString();
+                                    System.out.println(url);
                                     String date = jresponse.get("Date").toString();
-                                    System.out.println(uri);
+
+
+
+                                    StorageReference ref = storage.getReferenceFromUrl(url);
+                                    File localFile = File.createTempFile("video" + i, "mp4");
+                                    Uri u = Uri.parse(localFile.getAbsolutePath());
+
+                                    ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                            // local temp file has been created
+                                            System.out.println("download successful");
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            // handle any errors
+                                        }
+                                    });
+
+                                    videoList.add(new VideoResult(u, date));
+                                    System.out.println(url);
                                     System.out.println(date);
-                                    videoList.add(new VideoResult(uri, date));
+                                    System.out.println("iterate loop");
                                 }
                                 //videoList = Arrays.asList(g.fromJson(response.get("").toString(), VideoResult[].class));
                                 Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
                                 recordingsIntent.putParcelableArrayListExtra("videos", (ArrayList<? extends Parcelable>) videoList);
                                 startActivity(recordingsIntent);
                                 Log.d("GETREQUEST", "successful");
-                            } catch (JSONException e) {
+                            } catch (JSONException | IOException e) {
                                 Log.d("GETREQUEST", "didn't go through");
                                 e.printStackTrace();
                             }
