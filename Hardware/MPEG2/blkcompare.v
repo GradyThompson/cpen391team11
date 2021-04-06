@@ -70,7 +70,7 @@ module blkcompare(clk, reset_n, rdy, en, baddr, bq, mx, my, mreq, mq, m_wait, m_
 				end
 			end
 			2'h1: begin // Iterate over every (x, y) from (0, 0) to (15, 15)
-				if ($signed(accum) > $signed(oldaccum)) begin
+				if (accum > oldaccum) begin
 					next_state = 2'h2;
 				end
 
@@ -106,7 +106,7 @@ module blkcompare(clk, reset_n, rdy, en, baddr, bq, mx, my, mreq, mq, m_wait, m_
 			end
 			2'h2: begin // Wait for all requests to finish
 				if ((mx == x) && (my == y)) begin
-					if ($signed(accum) > $signed(oldaccum)) begin
+					if (accum > oldaccum) begin
 						next_state = 2'h0;
 					end else begin
 						next_state = 2'h3;
@@ -133,6 +133,9 @@ module blkcompare(clk, reset_n, rdy, en, baddr, bq, mx, my, mreq, mq, m_wait, m_
 					next_wait = 1'b0;
 					next_accum = 18'h0;
 				end
+			end
+			default: begin
+				next_state = 2'h0;
 			end
 		endcase
 	end
