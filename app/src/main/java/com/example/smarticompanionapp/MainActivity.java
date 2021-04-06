@@ -91,7 +91,10 @@ public class MainActivity extends AppCompatActivity {
                                     System.out.println(url);
                                     String date = jresponse.get("Date").toString();
 
-
+                                    //String severity = jresponse.get("Severity").toString();
+                                    //String length = jresponse.get("Length").toString();
+                                    String severity = "0.0";
+                                    String length = "length placeholder";
 
                                     StorageReference ref = storage.getReferenceFromUrl(url);
                                     File localFile = File.createTempFile("video" + i, "mp4");
@@ -110,11 +113,13 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     });
 
-                                    videoList.add(new VideoResult(u, date));
+                                    videoList.add(new VideoResult(u, date, severity, length));
+
                                     System.out.println(url);
                                     System.out.println(date);
                                     System.out.println("iterate loop");
                                 }
+
                                 //videoList = Arrays.asList(g.fromJson(response.get("").toString(), VideoResult[].class));
                                 Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
                                 recordingsIntent.putParcelableArrayListExtra("videos", (ArrayList<? extends Parcelable>) videoList);

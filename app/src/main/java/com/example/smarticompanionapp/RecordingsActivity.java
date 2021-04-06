@@ -52,18 +52,13 @@ public class RecordingsActivity extends AppCompatActivity {
         toolbar.setTitle("Recordings");
         setSupportActionBar(toolbar);
 
-        ImageButton settingsButton = (ImageButton) findViewById(R.id.settingsButton);
-        settingsButton.setVisibility(View.VISIBLE);
-        settingsButton.setOnClickListener(view -> {
-            Intent settingsIntent = new Intent(RecordingsActivity.this, SettingsActivity.class);
-            startActivity(settingsIntent);
-        });
 
         //will need to populate list with data on runtime, probably put up a loading screen
         //while retrieving recordings
 
         //placeholder, all videos are raw test_video_0.mp4
-        try {
+       // try {
+            /*
             InputStream vid = RecordingsActivity.this.getResources().openRawResource(R.raw.test_video_0);
             File video = new File(RecordingsActivity.this.getFilesDir(), "test_video_0.mp4");
             OutputStream vidout = new FileOutputStream(video);
@@ -73,17 +68,20 @@ public class RecordingsActivity extends AppCompatActivity {
             while ((bytesRead = vid.read(buffer)) != -1) {
                 vidout.write(buffer, 0, bytesRead);
             }
-
+            */
             videoData = getIntent().getParcelableArrayListExtra("videos");
 
             for (int x = 0; x < videoData.size(); x++){
                 //videoData.add(new VideoResult(null, "test" + x));
                 Uri uri = videoData.get(x).getVideo();
-                recArray.add(new Recording("date "+ x, (double) x, "vidLength "+ x, uri));
+                String date = videoData.get(x).getDateTime();
+                String severity = videoData.get(x).getSeverity();
+                String length = videoData.get(x).getLength();
+                recArray.add(new Recording(date, Double.parseDouble(severity) + x, length, uri));
             }
-        } catch (IOException e) {
+        //} catch (IOException e) {
             Log.i(Config.TAG, "IO fail");
-        }
+       // }
 
         recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, recArray.getVideoDataList(), recArray);
         Log.d("TAG", recArray.getVideoData(0));
@@ -97,4 +95,14 @@ public class RecordingsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ImageButton settingsButton = (ImageButton) findViewById(R.id.settingsButton);
+        settingsButton.setVisibility(View.VISIBLE);
+        settingsButton.setOnClickListener(view -> {
+            Intent settingsIntent = new Intent(RecordingsActivity.this, SettingsActivity.class);
+            startActivity(settingsIntent);
+        });
+    }
 }

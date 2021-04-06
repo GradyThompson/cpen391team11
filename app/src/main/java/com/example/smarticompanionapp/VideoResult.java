@@ -7,15 +7,21 @@ import android.os.Parcelable;
 public class VideoResult implements Parcelable {
     private Uri video;
     private String dateTime;
+    private String severity;
+    private String length;
 
-    public VideoResult(Uri video, String dateTime) {
+    public VideoResult(Uri video, String dateTime, String severity, String length) {
         this.video = video;
         this.dateTime = dateTime;
+        this.severity = severity;
+        this.length = length;
     }
 
     protected VideoResult(Parcel in) {
         video = in.readParcelable(Uri.class.getClassLoader());
         dateTime = in.readString();
+        severity = in.readString();
+        length = in.readString();
     }
 
     public static final Creator<VideoResult> CREATOR = new Creator<VideoResult>() {
@@ -32,6 +38,8 @@ public class VideoResult implements Parcelable {
 
     public Uri getVideo(){ return this.video; }
     public String getDateTime(){ return this.dateTime; }
+    public String getSeverity(){return this.severity;}
+    public String getLength(){return this.length;}
 
     @Override
     public int describeContents() {
@@ -42,5 +50,7 @@ public class VideoResult implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(video, flags);
         dest.writeString(dateTime);
+        dest.writeString(severity);
+        dest.writeString(length);
     }
 }
