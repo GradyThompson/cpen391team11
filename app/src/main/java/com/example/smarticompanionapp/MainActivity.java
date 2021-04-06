@@ -100,14 +100,11 @@ public class MainActivity extends AppCompatActivity {
                                             "downloading videos", Toast.LENGTH_SHORT);
                                     toast.show();
                                     JSONObject jresponse = response.getJSONObject(i);
-                                    String url = jresponse.get("Uri").toString();
-                                    System.out.println(url);
+                                    String url = jresponse.get("Url").toString();
+                                    //System.out.println(url);
                                     String date = jresponse.get("Date").toString();
-
-                                    //String severity = jresponse.get("Severity").toString();
-                                    //String length = jresponse.get("Length").toString();
-                                    String severity = "0.0";
-                                    String length = "length placeholder";
+                                    String severity = jresponse.get("Severity").toString();
+                                    String length = jresponse.get("Length").toString();
 
                                     StorageReference ref = storage.getReferenceFromUrl(url);
                                     File localFile = File.createTempFile("video" + i, "mp4");

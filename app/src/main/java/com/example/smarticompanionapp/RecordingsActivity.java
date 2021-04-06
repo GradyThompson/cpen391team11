@@ -75,7 +75,7 @@ public class RecordingsActivity extends AppCompatActivity {
                 String date = videoData.get(x).getDateTime();
                 String severity = videoData.get(x).getSeverity();
                 String length = videoData.get(x).getLength();
-                recArray.add(new Recording(date, Double.parseDouble(severity) + x, length, uri));
+                recArray.add(new Recording(date, Double.parseDouble(severity), length, uri));
             }
 
         recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, recArray.getVideoDataList(), recArray);
