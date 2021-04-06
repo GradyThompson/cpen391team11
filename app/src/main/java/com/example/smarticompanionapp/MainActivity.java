@@ -9,6 +9,7 @@
 package com.example.smarticompanionapp;
 
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.net.Uri;
@@ -49,7 +50,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
 
+import static com.google.android.gms.tasks.Task.*;
+import static com.google.android.gms.tasks.Tasks.await;
 import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity {
@@ -65,11 +71,13 @@ public class MainActivity extends AppCompatActivity {
         //Log.d("TOKEN", token);
             //the line above caused the app to crash, commented it out to work on other parts of the app
 
+
         Button usbButton = (Button) findViewById(R.id.usb_button);
         usbButton.setOnClickListener(v -> {
             Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
             startActivity(recordingsIntent);
         });
+
 
         Button wifiButton = (Button) findViewById(R.id.wifi_button);
         wifiButton.setOnClickListener(v -> {
@@ -83,9 +91,14 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONArray response) {
                             ArrayList<VideoResult> videoList = new ArrayList<>();
+
                             try {
                                 Log.d("JsonArray", response.toString());
+
                                 for (int i = 0; i < response.length(); i++) {
+                                    Toast toast = Toast.makeText(MainActivity.this,
+                                            "downloading videos", Toast.LENGTH_SHORT);
+                                    toast.show();
                                     JSONObject jresponse = response.getJSONObject(i);
                                     String url = jresponse.get("Uri").toString();
                                     System.out.println(url);
@@ -100,7 +113,9 @@ public class MainActivity extends AppCompatActivity {
                                     File localFile = File.createTempFile("video" + i, "mp4");
                                     Uri u = Uri.parse(localFile.getAbsolutePath());
 
-                                    ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                    FileDownloadTask task = ref.getFile(localFile);
+
+                                    task.addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                         @Override
                                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                             // local temp file has been created
@@ -112,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
                                             // handle any errors
                                         }
                                     });
+
+                                    while(!task.isComplete()){
+                                    }
 
                                     videoList.add(new VideoResult(u, date, severity, length));
 
