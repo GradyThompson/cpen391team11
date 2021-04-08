@@ -8,7 +8,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -26,7 +25,7 @@ public class VideoTest {
 
     @Test
     public void chatTest() throws InterruptedException {
-        onView(withId(R.id.usb_button))
+        onView(withId(R.id.bypass_button))
                 .perform(click());
 
         Thread.sleep(2000);

@@ -11,7 +11,9 @@ package com.example.smarticompanionapp;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -60,6 +62,7 @@ import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity {
 
+    SharedPreferences cameraToken;
     FirebaseStorage storage = FirebaseStorage.getInstance();
 
     @Override
@@ -67,102 +70,98 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        cameraToken = getSharedPreferences("label", Context.MODE_PRIVATE);
         String token = FirebaseInstanceId.getInstance().getToken();
         //Log.d("TOKEN", token);
-            //the line above caused the app to crash, commented it out to work on other parts of the app
+        //the line above caused the app to crash, commented it out to work on other parts of the app
 
-
-        Button usbButton = (Button) findViewById(R.id.usb_button);
-        usbButton.setOnClickListener(v -> {
-            Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
-            startActivity(recordingsIntent);
-        });
-
-
-        Button wifiButton = (Button) findViewById(R.id.wifi_button);
-        wifiButton.setOnClickListener(v -> {
-            final Gson g = new Gson();
-            final JSONArray object = new JSONArray();
-            final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url = "http://18.222.192.144:3000/getVid";
-
-            final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, object,
-                    new Response.Listener<JSONArray>() {
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            ArrayList<VideoResult> videoList = new ArrayList<>();
-
-                            try {
-                                Log.d("JsonArray", response.toString());
-
-                                for (int i = 0; i < response.length(); i++) {
-                                    Toast toast = Toast.makeText(MainActivity.this,
-                                            "downloading videos", Toast.LENGTH_SHORT);
-                                    toast.show();
-                                    JSONObject jresponse = response.getJSONObject(i);
-                                    String url = jresponse.get("Url").toString();
-                                    //System.out.println(url);
-                                    String date = jresponse.get("Date").toString();
-                                    String severity = jresponse.get("Severity").toString();
-                                    String length = jresponse.get("Length").toString();
-
-                                    StorageReference ref = storage.getReferenceFromUrl(url);
-                                    File localFile = File.createTempFile("video" + i, "mp4");
-                                    Uri u = Uri.parse(localFile.getAbsolutePath());
-
-                                    FileDownloadTask task = ref.getFile(localFile);
-
-                                    task.addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                            // local temp file has been created
-                                            System.out.println("download successful");
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // handle any errors
-                                        }
-                                    });
-
-                                    while(!task.isComplete()){
-                                    }
-
-                                    videoList.add(new VideoResult(u, date, severity, length));
-
-                                    System.out.println(url);
-                                    System.out.println(date);
-                                    System.out.println("iterate loop");
-                                }
-
-                                //videoList = Arrays.asList(g.fromJson(response.get("").toString(), VideoResult[].class));
-                                Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
-                                recordingsIntent.putParcelableArrayListExtra("videos", (ArrayList<? extends Parcelable>) videoList);
-                                startActivity(recordingsIntent);
-                                Log.d("GETREQUEST", "successful");
-                            } catch (JSONException | IOException e) {
-                                Log.d("GETREQUEST", "didn't go through");
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    System.out.println(error);
-                }
-            });
-            queue.add(jsonObjectRequest);
-        });
-
-        Button bluetoothButton = (Button) findViewById(R.id.bluetooth_button);
-        bluetoothButton.setOnClickListener(v -> {
-            //if (BluetoothAdapter.getDefaultAdapter() == null) {
-               // Toast toast = Toast.makeText(this.getApplicationContext(),"Bluetooth Not Supported", Toast.LENGTH_SHORT);
-               // toast.show();
-            //} else {
+        Button connectButton = (Button) findViewById(R.id.connect_button);
+        connectButton.setOnClickListener(v -> {
+            if (cameraToken.getString("Token", null) == null) {
                 Intent bluetoothIntent = new Intent(MainActivity.this, BluetoothActivity.class);
                 startActivity(bluetoothIntent);
-            //}
+            } else {
+                getVideos();
+            }
         });
+
+        Button bypassButton = (Button) findViewById(R.id.bypass_button);
+        bypassButton.setOnClickListener(v -> {
+            getVideos();
+        });
+    }
+
+    private void getVideos() {
+        final Gson g = new Gson();
+        final JSONArray object = new JSONArray();
+        final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String url = "http://18.222.192.144:3000/getVid";
+
+        final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, object,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        ArrayList<VideoResult> videoList = new ArrayList<>();
+
+                        try {
+                            Log.d("JsonArray", response.toString());
+
+                            for (int i = 0; i < response.length(); i++) {
+                                Toast toast = Toast.makeText(MainActivity.this,
+                                        "downloading videos", Toast.LENGTH_SHORT);
+                                toast.show();
+                                JSONObject jresponse = response.getJSONObject(i);
+                                String url = jresponse.get("Url").toString();
+                                //System.out.println(url);
+                                String date = jresponse.get("Date").toString();
+                                String severity = jresponse.get("Severity").toString();
+                                String length = jresponse.get("Length").toString();
+
+                                StorageReference ref = storage.getReferenceFromUrl(url);
+                                File localFile = File.createTempFile("video" + i, "mp4");
+                                Uri u = Uri.parse(localFile.getAbsolutePath());
+
+                                FileDownloadTask task = ref.getFile(localFile);
+
+                                task.addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                        // local temp file has been created
+                                        System.out.println("download successful");
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // handle any errors
+                                    }
+                                });
+
+                                while(!task.isComplete()){
+                                }
+
+                                videoList.add(new VideoResult(u, date, severity, length));
+
+                                System.out.println(url);
+                                System.out.println(date);
+                                System.out.println("iterate loop");
+                            }
+
+                            //videoList = Arrays.asList(g.fromJson(response.get("").toString(), VideoResult[].class));
+                            Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
+                            recordingsIntent.putParcelableArrayListExtra("videos", (ArrayList<? extends Parcelable>) videoList);
+                            startActivity(recordingsIntent);
+                            Log.d("GETREQUEST", "successful");
+                        } catch (JSONException | IOException e) {
+                            Log.d("GETREQUEST", "didn't go through");
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+            }
+        });
+        queue.add(jsonObjectRequest);
     }
 }
