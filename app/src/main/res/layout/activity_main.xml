@@ -8,8 +8,8 @@
 
     <Button
         android:id="@+id/bypass_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="255dp"
+        android:layout_height="66dp"
         android:text="@string/bypass_bluetooth"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,6 +22,16 @@
         android:layout_height="wrap_content"
         android:text="@string/connect_to_camera"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/view_rec_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/view_rec_button"
+        app:layout_constraintBottom_toTopOf="@+id/connect_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

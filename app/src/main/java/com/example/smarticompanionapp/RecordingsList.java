@@ -59,6 +59,7 @@ public class RecordingsList extends ArrayAdapter<String> {
     private ArrayList<VideoResult> VideoArray;
     private RecordingsArray recArray;
     private ArrayList<String> videoData;
+    private RecordingViewModel mRecordViewModel;
 
     /*
     public RecordingsList (Context context, int textViewResourceId, ArrayList<VideoResult> VideoArray) {
@@ -161,9 +162,10 @@ public class RecordingsList extends ArrayAdapter<String> {
 
             });
             builder.setNegativeButton("Delete", (dialog, which) -> {
-                Toast toast = Toast.makeText(context.getApplicationContext(),"delete video placeholder", Toast.LENGTH_SHORT);
-                toast.show();
+                //Toast toast = Toast.makeText(context.getApplicationContext(),"delete video placeholder", Toast.LENGTH_SHORT);
+                //toast.show();
                 this.remove(this.getItem(position));
+                mRecordViewModel.deleteByUri(recArray.getRecord(position).uri);
                 recArray.delete(position);
                 videoData = recArray.getVideoDataList();
                 this.notifyDataSetChanged();

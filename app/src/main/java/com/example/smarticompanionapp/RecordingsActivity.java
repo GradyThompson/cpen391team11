@@ -6,33 +6,21 @@
 
 package com.example.smarticompanionapp;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.arthenica.mobileffmpeg.Config;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.storage.FirebaseStorage;
-
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +30,9 @@ public class RecordingsActivity extends AppCompatActivity {
 
     private ArrayList<VideoResult> videoData = new ArrayList<>();
 
-   static private RecordingsArray recArray = new RecordingsArray();
+    private RecordingsArray recArray = new RecordingsArray();
+
+   private RecordingViewModel mRecordViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +58,20 @@ public class RecordingsActivity extends AppCompatActivity {
                 vidout.write(buffer, 0, bytesRead);
             }
             */
-            videoData = getIntent().getParcelableArrayListExtra("videos");
 
-            for (int x = 0; x < videoData.size(); x++){
-                Uri uri = videoData.get(x).getVideo();
-                String date = videoData.get(x).getDateTime();
-                String severity = videoData.get(x).getSeverity();
-                String length = videoData.get(x).getLength();
-                recArray.add(new Recording(date, Double.parseDouble(severity), length, uri));
-            }
+        //videoData = getIntent().getParcelableArrayListExtra("videos");
+
+        mRecordViewModel = new ViewModelProvider(this).get(RecordingViewModel.class);
+        List<RecordingEntity> vidData = mRecordViewModel.getAllRecordings();
+
+        for (int x = 0; x < vidData.size(); x++){
+            //Uri uri = videoData.get(x).getVideo();
+            Uri uri = Uri.parse(vidData.get(x).uri);
+            String date = vidData.get(x).date;
+            Double severity = vidData.get(x).severity;
+            String length = vidData.get(x).length;
+            recArray.add(new Recording(date, severity, length, uri));
+        }
 
         recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, recArray.getVideoDataList(), recArray);
         Log.d("TAG", recArray.getVideoData(0));
@@ -101,4 +96,5 @@ public class RecordingsActivity extends AppCompatActivity {
             startActivity(settingsIntent);
         });
     }
+
 }

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -65,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences cameraToken;
     FirebaseStorage storage = FirebaseStorage.getInstance();
 
+    private RecordingViewModel mRecordViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +92,16 @@ public class MainActivity extends AppCompatActivity {
         bypassButton.setOnClickListener(v -> {
             getVideos();
         });
+
+        Button viewRecButton = (Button) findViewById(R.id.view_rec_button);
+        viewRecButton.setOnClickListener(v -> {
+            Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
+            //recordingsIntent.putParcelableArrayListExtra("videos", (ArrayList<? extends Parcelable>) videoList);
+            startActivity(recordingsIntent);
+        });
+
+
+        mRecordViewModel = new ViewModelProvider(this).get(RecordingViewModel.class);
     }
 
     private void getVideos() {
@@ -96,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         final JSONArray object = new JSONArray();
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         String url = "http://18.222.192.144:3000/getVid";
+
 
         final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, object,
                 new Response.Listener<JSONArray>() {
@@ -105,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
                         try {
                             Log.d("JsonArray", response.toString());
-
+                            mRecordViewModel.deleteAll();
                             for (int i = 0; i < response.length(); i++) {
                                 Toast toast = Toast.makeText(MainActivity.this,
                                         "downloading videos", Toast.LENGTH_SHORT);
@@ -144,12 +158,24 @@ public class MainActivity extends AppCompatActivity {
                                 System.out.println(url);
                                 System.out.println(date);
                                 System.out.println("iterate loop");
-                            }
 
+                                RecordingEntity recordingEntity = new RecordingEntity();
+                                recordingEntity.uri = u.toString();
+                                recordingEntity.date = date;
+                                recordingEntity.severity = Double.parseDouble(severity);
+                                recordingEntity.length = length;
+                                mRecordViewModel.insert(recordingEntity);
+
+                            }
+                            Toast toast = Toast.makeText(MainActivity.this,
+                                    "Videos downloaded", Toast.LENGTH_SHORT);
+                            toast.show();
                             //videoList = Arrays.asList(g.fromJson(response.get("").toString(), VideoResult[].class));
-                            Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
-                            recordingsIntent.putParcelableArrayListExtra("videos", (ArrayList<? extends Parcelable>) videoList);
-                            startActivity(recordingsIntent);
+                            //Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
+                            //recordingsIntent.putParcelableArrayListExtra("videos", (ArrayList<? extends Parcelable>) videoList);
+                            //startActivity(recordingsIntent);
+
+
                             Log.d("GETREQUEST", "successful");
                         } catch (JSONException | IOException e) {
                             Log.d("GETREQUEST", "didn't go through");
