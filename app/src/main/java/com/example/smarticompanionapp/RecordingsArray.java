@@ -19,8 +19,8 @@ public class RecordingsArray {
     * Both arrays should be sorted so that the highest severity recordings go in front
     * There should be no duplicate entries*/
 
-    //these will be public now for easy testing, later want them to be private to prevent exposing
-    //these arrays directly
+    //these will be public now for easy testing, later might want them to be private to prevent
+    //exposing these arrays directly
     public LinkedList<Recording> RecArray = new LinkedList<>();
     public ArrayList<String> videoDataList = new ArrayList<>();
 
@@ -73,15 +73,14 @@ public class RecordingsArray {
     }
 
     /*
-     *  Removes a recording from the structure and deletes it off app and remote storage
+     *  Removes a recording from the structure and deletes it off app
      *  Since there should be no repeats, just deletes first object matching
      *  Returns 1 if the recording has been deletes, 0 if no matching recordings are found
-     *  Must send a signal to the cloud database and/or the device to delete the recording
+     *  Recordings will still remain on the remote storage
      */
     public int delete(Recording recording) {
         if (remove(recording) == 1) {
             //delete recording from storage
-            //send signal to remote database to delete recording
             Uri uri = recording.uri;
             File delete = new File(uri.getPath());
             if (delete.exists()) {
