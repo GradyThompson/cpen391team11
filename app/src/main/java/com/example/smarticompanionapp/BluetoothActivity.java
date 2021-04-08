@@ -122,24 +122,28 @@ public class BluetoothActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         ArrayList<VideoResult> videoList = new ArrayList<>();
+
                         try {
                             Log.d("JsonArray", response.toString());
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject jresponse = response.getJSONObject(i);
-                                String url = jresponse.get("Uri").toString();
-                                System.out.println(url);
-                                String date = jresponse.get("Date").toString();
 
-                                //String severity = jresponse.get("Severity").toString();
-                                //String length = jresponse.get("Length").toString();
-                                String severity = "0.0";
-                                String length = "length placeholder";
+                            for (int i = 0; i < response.length(); i++) {
+                                Toast toast = Toast.makeText(BluetoothActivity.this,
+                                        "downloading videos", Toast.LENGTH_SHORT);
+                                toast.show();
+                                JSONObject jresponse = response.getJSONObject(i);
+                                String url = jresponse.get("Url").toString();
+                                //System.out.println(url);
+                                String date = jresponse.get("Date").toString();
+                                String severity = jresponse.get("Severity").toString();
+                                String length = jresponse.get("Length").toString();
 
                                 StorageReference ref = storage.getReferenceFromUrl(url);
                                 File localFile = File.createTempFile("video" + i, "mp4");
                                 Uri u = Uri.parse(localFile.getAbsolutePath());
 
-                                ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                FileDownloadTask task = ref.getFile(localFile);
+
+                                task.addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                         // local temp file has been created
@@ -151,6 +155,9 @@ public class BluetoothActivity extends AppCompatActivity {
                                         // handle any errors
                                     }
                                 });
+
+                                while(!task.isComplete()){
+                                }
 
                                 videoList.add(new VideoResult(u, date, severity, length));
 
