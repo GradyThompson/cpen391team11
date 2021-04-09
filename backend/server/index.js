@@ -3,37 +3,19 @@ const app = express();
 
 const { MongoClient } = require('mongodb');
 const CONNECTION_URL = 'mongodb+srv://testboy:dudwotkrhks2@cluster0.i6ov7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-const client = new MongoClient(CONNECTION_URL);
+const client = new MongoClient(CONNECTION_URL, { useUnifiedTopology: true });
 client.connect();
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+var ffmpeg = require("fluent-ffmpeg");
+ffmpeg.setFfmpegPath(ffmpegPath);
+
 app.get('/', (req, res) => {
     res.send('We are connected');
-});
-
-// AUTH SERVICE
-app.post('/auth/check', (req, response) => {
-	// possibly google auth
-	if (req.body.email == undefined) {
-		response.status(400).send({ "message": "No email provided for authentication" });
-	}
-	else {
-		var userDB = client.db("smarti").collection("user");
-		userDB.findOne({ Email: req.body.email }, function (err, item) {
-			if (err) {
-				throw err;
-			}
-			if (item == undefined) {
-				response.status(400).send({ success: false, message: "User has not been created, please re-create" });
-			}
-			else {
-				response.status(200).send({ success: true });
-			}
-		});
-	}
 });
 
 app.post('/auth/create', (req, response) => {
@@ -73,26 +55,46 @@ app.post('/auth/create', (req, response) => {
 	}
 });
 
-app.post('/save', (req, response) => {
-	if (req.body.email == undefined || req.body.path == undefined || req.body.filename == undefined || req.body.date == undefined) {
-		response.status(400).send({ "message": "fields are not valid" });
-	} else {
-		var fileDB = client.db("smarti").collection("file");
-		fileDB.insertOne({
-			Email: req.body.email,
-			Path: req.body.path,
-			FileName: req.body.filename,
-			Date: req.body.date
-		}, function (err) {
-			if (err) {
-				response.status(400).send({ "message": "Error occured when saving file info" }, 400);
-				throw err;
-			}
-			else {
-				response.status(200).send({ success: true });
-			}
-		});
-	}
+app.get('/save', (req, response) => {
+
+	var inFile = "vtest.mpeg";
+	var outFile = "test1.mp4";
+
+	console.log("Got request... start converting");
+
+	const spawn = require("child_process").spawn;
+	const mt = spawn('python', ['./motion_detector.py', 'vtest.mpeg']);
+
+	mt.stdout.on('data', (data) => {
+		console.log(data.toString());
+		response.send(data);
+	});
+
+	mt.stderr.on('data', (data) => {
+
+	});
+
+	//ffmpeg(inFile).save(outFile);
+
+	// if (req.body.email == undefined || req.body.path == undefined || req.body.filename == undefined || req.body.date == undefined) {
+	// 	response.status(400).send({ "message": "fields are not valid" });
+	// } else {
+	// 	var fileDB = client.db("smarti").collection("file");
+	// 	fileDB.insertOne({
+	// 		Email: req.body.email,
+	// 		Path: req.body.path,
+	// 		FileName: req.body.filename,
+	// 		Date: req.body.date
+	// 	}, function (err) {
+	// 		if (err) {
+	// 			response.status(400).send({ "message": "Error occured when saving file info" }, 400);
+	// 			throw err;
+	// 		}
+	// 		else {
+	// 			response.status(200).send({ success: true });
+	// 		}
+	// 	});
+	// }
 });
 
 app.get('/getVid', (req, response) => {
