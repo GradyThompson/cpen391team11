@@ -16,7 +16,7 @@ module rleenc_tb();
 	rleenc DUT(.clk(clk), .reset_n(rst), .rdy(rdy), .en(en), .addr(addr), .q(q),
 	.h_rdy(hrdy), .h_en(hen), .h_val(val), .h_len(len), .h_end(hend), .h_dc(dc));
 
-	register #(16) DC(.clk(clk), .in(rst ? 16'b0 : val), .out(dcval), .en(dc));
+	register #(16) DC(.clk(clk), .in(rst ? val : 16'b0), .out(dcval), .en(dc));
 	
 	task assertmem;
 	begin
@@ -113,5 +113,15 @@ module rleenc_tb();
 		end
 		#5;
 		assertmem();
+		if (dcval === -16'd25) begin
+			$display("At time %0t, %0d == %0d", $time, dcval, -16'd25);
+		end else begin
+			$error("At time %0t, %0d != %0d", $time, dcval, -16'd25);
+		end
+		if (done === 1'b1) begin
+			$display("At time %0t, done is asserted", $time);
+		end else begin
+			$error("At time %0t, done is not asserted", $time);
+		end
 	end
 endmodule
