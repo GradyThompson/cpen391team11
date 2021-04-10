@@ -24,14 +24,14 @@ module rleenc(
 	wire neg;
 
 	// X and Y coordinate in the DCT block
-	register #(3) X(.clk(clk), .in(reset_n ? 3'b0 : next_x), .out(x), .en(1'b1));
-	register #(3) Y(.clk(clk), .in(reset_n ? 3'b0 : next_y), .out(y), .en(1'b1));
+	register #(3) X(.clk(clk), .in(reset_n ? next_x : 3'b0), .out(x), .en(1'b1));
+	register #(3) Y(.clk(clk), .in(reset_n ? next_y : 3'b0), .out(y), .en(1'b1));
 	// Select moving up or down the diagonal
-	register #(1) NEG(.clk(clk), .in(reset_n ? 1'b0 : next_neg), .out(neg), .en(1'b1));
+	register #(1) NEG(.clk(clk), .in(reset_n ? next_neg : 1'b0), .out(neg), .en(1'b1));
 	// Number of zeros seen so far
-	register #(6) RLE(.clk(clk), .in(reset_n ? 6'b0 : next_rle), .out(h_len), .en(1'b1));
+	register #(6) RLE(.clk(clk), .in(reset_n ? next_rle : 6'b0), .out(h_len), .en(1'b1));
 	// Current state
-	register #(2) STATE(.clk(clk), .in(reset_n ? 2'b0 : next_state), .out(state), .en(1'b1));
+	register #(2) STATE(.clk(clk), .in(reset_n ? next_state : 2'b0), .out(state), .en(1'b1));
 
 	assign addr = { next_y, next_x };
 	assign h_dc = {y, x} == 6'b0;
@@ -46,7 +46,7 @@ module rleenc(
 		next_rle = h_len;
 		h_end = 1'b0;
 		h_en  = 1'b0;
-		case (state) begin
+		case (state)
 			2'b00: begin
 				rdy = 1'b1;
 				if (en) begin
@@ -59,10 +59,16 @@ module rleenc(
 			end
 			2'b01: begin
 				// Logic to select the next address
-				if ((y == 3'b0) && (x[0] == 1'b0)) begin // Even x, y = 0
+				if ((y == 3'd7) && (x[0] == 1'b0)) begin
+					next_x = x + 3'b1;
+					next_neg = 1'b0;
+				end else if ((x == 3'd7) && (y[0] == 1'b1)) begin
+					next_y = y + 3'b1;
+					next_neg = 1'b1;
+				end else if ((y == 3'b0) && (x[0] == 1'b0)) begin // Even x, y = 0
 					next_x = x + 3'b1;
 					next_neg = 1'b1;
-				end else if ((x == 3'b0) && (y[0] == 1'b0)) begin // Even y, x = 0
+				end else if ((x == 3'b0) && (y[0] == 1'b1)) begin // Odd y, x = 0
 					next_y = y + 3'b1;
 					next_neg = 1'b0;
 				end else begin
@@ -78,7 +84,7 @@ module rleenc(
 				// Logic to record the RLE values
 				if (q == 6'b0) begin // Count run of zeros
 					next_rle = h_len + 6'h1;
-					if (addr == 6'd63) begin // Last digit is a zero
+					if ((x == 3'd7) && (y == 3'd7)) begin // Last digit is a zero
 						h_end = 1'b1; // Signal end of block
 						if (h_rdy) begin
 							h_en = 1'b1;
@@ -92,7 +98,7 @@ module rleenc(
 					if (h_rdy) begin 
 						h_en = 1'b1;
 						next_rle = 6'd0;
-						if (addr == 6'd63) begin // Last digit is non-zero
+						if ((x == 3'd7) && (y == 3'd7)) begin // Last digit is non-zero
 							h_end = 1'b1; // Signal end of block
 							next_state = 2'b00;
 						end
@@ -105,7 +111,7 @@ module rleenc(
 			default: begin
 				next_state = 2'b00;
 			end
-		end
+		endcase
 	end
 
 endmodule
