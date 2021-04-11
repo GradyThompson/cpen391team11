@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         final Gson g = new Gson();
         final JSONArray object = new JSONArray();
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        String url = "http://18.222.192.144:3000/getVid";
+        String url = "http://35.239.13.217:3000/getVid";
 
 
         final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, object,
