@@ -77,6 +77,20 @@ app.post('/auth/create', (req, response) => {
 	}
 });
 
+app.get('/test', (req, res) => {
+	var spawn = require("child_process").spawn;
+
+    var process = spawn('python3',["./hello.py",
+                            req.body.firstname,
+                            req.body.lastname] );
+  
+    // Takes stdout data from script which executed
+    // with arguments and send this data to res object
+    process.stdout.on('data', function(data) {
+        res.send(data.toString());
+    } )
+});
+
 app.post('/save', (req, response) => {
 
 	var inFile = "vtest.mpeg";
@@ -85,7 +99,7 @@ app.post('/save', (req, response) => {
 	console.log("Got request... start converting");
 
 	const spawn = require("child_process").spawn;
-	const mt = spawn('python', ['./motion_detector.py', 'vtest.mpeg']);
+	const mt = spawn('python3', ['./motion_detector.py', 'vtest.mpeg']);
 
 	mt.stdout.on('data', (data) => {
 		console.log(data.toString());
@@ -93,7 +107,7 @@ app.post('/save', (req, response) => {
 	});
 
 	mt.stderr.on('data', (data) => {
-
+		console.log(data.toString());
 	});
 
 	ffmpeg(inFile).save(outFile);
@@ -155,7 +169,7 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 		});
 
 		const spawn = require("child_process").spawn;
-		const mt = spawn('python', ['./motion_detector.py', outFile]);
+		const mt = spawn('python3', ['./motion_detector.py', outFile]);
 		console.log('start motion detection');
 
 		mt.stdout.on('data', (data) => {
@@ -180,7 +194,7 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 		});
 
 		mt.stderr.on('data', (data) => {
-			console.log('error');
+			console.log(data.toString());
 		});
 	})
 });

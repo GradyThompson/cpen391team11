@@ -109,9 +109,9 @@ while True:
     sizeScore += frameScore
     mvScore += frameMvScore
 
-    cv2.imshow('Frame', frame)
-    cv2.imshow('FG MASK Frame', thresh)
-    cv2.imshow('FG MASK delta', frameDelta)
+    #cv2.imshow('Frame', frame)
+    #cv2.imshow('FG MASK Frame', thresh)
+    #cv2.imshow('FG MASK delta', frameDelta)
 
 
     keyboard = cv2.waitKey(20)
@@ -134,4 +134,4 @@ print(round(score/10, 1))
 sys.stdout.flush()
 
 cap.release()
-cv2.destroyAllWindows()
+#cv2.destroyAllWindows()
