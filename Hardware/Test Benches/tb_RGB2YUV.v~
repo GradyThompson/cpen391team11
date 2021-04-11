@@ -1,0 +1,39 @@
+module tb_RGB2YUV();
+
+   //Test bench for the RGB to YUV converting module
+   reg [7:0] R, B, G;
+   wire [7:0] Y, U, V;
+
+   RGB2YUV DUT (.R(R), .B(B), .G(G), .Y(Y), .U(U), .V(V));
+   
+   initial begin
+      //Test 1
+      R = 8'd0;
+      B = 8'd0;
+      G = 8'd0;
+      $display("%0d", (8'd128 + 8'd66*R + 8'd129*G + 8'd25*B) >> 8'd8);
+      
+
+      #1;
+
+      if (Y !== 8'd0) $display("FAILED: Y is %0d, when it should be 0 for Test 1", Y);
+      if (U !== 8'd128) $display("FAILED: U is %0d, when it should be 128 for Test 1", U);
+      if (V !== 8'd128) $display("FAILED: V is %0d, when it should be 128 for Test 1", V);
+
+      #1;
+
+      //Test 2
+      R = 8'd255;
+      B = 8'd0;
+      G = 8'd0;
+
+      #1;
+
+      if (Y !== 8'd76) $display("FAILED: Y is %d, when it should be 76 for Test 2", Y);
+      if (U !== 8'd84) $display("FAILED: U is %d, when it should be 84 for Test 2", U);
+      if (V !== 8'd255) $display("FAILED: V is %d, when it should be 255 for Test 2", V);
+
+      #1;
+   end
+
+endmodule

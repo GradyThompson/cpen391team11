@@ -1,0 +1,42 @@
+module XY2ADDRESS (	input [9:0] row, col, 
+							output U_frame_buffer_num,
+							output reg [15:0] Y_addr,
+							output reg [5:0] Y_data_pos,
+							output reg [15:0] U_addr,
+							output reg [7:0] U_data_pos,
+							output reg [12:0] V_addr,
+							output reg [7:0] V_data_pos)
+			
+	/*
+		U_frame_buffer_num is the frame_buffer that the pixel's U value is in, Y is strictly in buffer 1
+		and V is strictly in buffer 2
+	*/		
+	wire [9:0] hrow, hcol;
+							
+	assign hrow = row >> 1;
+	assign hcol = col >> 1;
+	
+	assign U_frame_buffer_num = row > 10'd31;
+	
+	/*
+		Data position is assigned the position in the data array in memory that is the start
+		of that pixels data (each pixel has 8 bits)
+	*/
+	
+	always @(row, col) begin
+		Y_addr = ((16'd640*row + col)*32'd3435973837) >> 2;
+		Y_data_pos = (col - ((col*32'd3435973837) >> 2)*32'd5) << 3;
+		if (row < 10'd32) begin
+			U_frame_buffer_num = 1'b0;
+			U_addr = ((16'd640*(hrow + 16'd480) + hcol)*32'd3435973837) >> 2;
+			U_data_pos = (hcol - ((hcol*32'd3435973837) >> 2)*32'd5) << 3;
+		end else begin
+			U_frame_buffer_num = 1'b1;
+			addr = ((16'd640*(hrow 1 - 16'd32) + hcol 1)*32'd954437177 >> 2;
+			U_data_pos = (hcol - (hcol*32'd954437177) >> 2)*32'd18) << 3;
+		end
+		frame_buffer_num = 1'b1;
+		V_addr = ((16'd640*(hrow + 16'd448) + hcol)*32'd954437177 >> 2;
+		V_data_pos = (hcol - (hcol*32'd954437177) >> 2)*32'd18) << 3;
+	end
+end module
