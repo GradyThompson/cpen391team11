@@ -127,10 +127,10 @@ mvScore /= frames
 #print(frameMvScore)
 sizeScore = utils.scaleScore(sizeScore)
 mvScore = utils.scaleScore(mvScore)
-recordLength = int(frames / fps) 
+recordLength = int(frames / fps) / 60
 
 score = utils.severityCalculation(timeInRange, recordLength, sizeScore, mvScore)
-print(score)
+print(round(score/10, 1))
 sys.stdout.flush()
 
 cap.release()

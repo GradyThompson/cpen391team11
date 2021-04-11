@@ -133,9 +133,15 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 	console.log(req.file);
 
 	var inFile = path.parse(req.file.filename);
+	var date = req.body.date;
+	var length = req.body.length;
+
+	console.log(date);
+	console.log(length);
+	
 	var outFile = 'uploads/' + inFile.name + '.mp4';
 
-	console.log("Got request... start converting");
+	console.log("start converting");
 
 	ffmpeg(req.file.path)
 	.save(outFile)
@@ -147,9 +153,36 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 			}
 	
 		});
-	})
 
-	response.send("successful");
+		const spawn = require("child_process").spawn;
+		const mt = spawn('python', ['./motion_detector.py', outFile]);
+		console.log('start motion detection');
+
+		mt.stdout.on('data', (data) => {
+			console.log(data.toString());
+			var score = data.toString();
+
+			var fileDB = client.db("smarti").collection("file");
+			fileDB.insertOne({
+				Url: "gs://macro-dogfish-306517.appspot.com/" + inFile.name + '.mp4',
+				Date: date,
+				Length: length,
+				Severity: score
+			}, function (err) {
+				if (err) {
+					response.status(400).send({ "message": "Error occured when saving file info" }, 400);
+					throw err;
+				}
+				else {
+					response.status(200).send({ success: true });
+				}
+			});
+		});
+
+		mt.stderr.on('data', (data) => {
+			console.log('error');
+		});
+	})
 });
 
 
