@@ -14,6 +14,28 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 var ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(ffmpegPath);
 
+const multer = require('multer');
+const path = require('path');
+const mstorage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, 'uploads/')
+	},
+	filename: (req, file, cb) => {
+		cb(null, file.originalname)
+	},
+});
+const upload = multer({storage: mstorage});
+
+var admin = require('firebase-admin');
+var serviceAccount = require('./firebasecpen391.json');
+admin.initializeApp({
+	credential: admin.credential.cert(serviceAccount),
+	storageBucket: 'macro-dogfish-306517.appspot.com'
+});
+var bucket =  admin.storage().bucket();
+
+
+
 app.get('/', (req, res) => {
     res.send('We are connected');
 });
@@ -55,7 +77,7 @@ app.post('/auth/create', (req, response) => {
 	}
 });
 
-app.get('/save', (req, response) => {
+app.post('/save', (req, response) => {
 
 	var inFile = "vtest.mpeg";
 	var outFile = "test1.mp4";
@@ -74,7 +96,7 @@ app.get('/save', (req, response) => {
 
 	});
 
-	//ffmpeg(inFile).save(outFile);
+	ffmpeg(inFile).save(outFile);
 
 	// if (req.body.email == undefined || req.body.path == undefined || req.body.filename == undefined || req.body.date == undefined) {
 	// 	response.status(400).send({ "message": "fields are not valid" });
@@ -105,6 +127,29 @@ app.get('/getVid', (req, response) => {
 		response.send(documents);
 	});
 	
+});
+
+app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
+	console.log(req.file);
+
+	var inFile = path.parse(req.file.filename);
+	var outFile = 'uploads/' + inFile.name + '.mp4';
+
+	console.log("Got request... start converting");
+
+	ffmpeg(req.file.path)
+	.save(outFile)
+	.on('end', function() {
+		console.log('processing done');
+		bucket.upload(outFile, function(err, file, apiResponse) {
+			if (err) {
+				console.log('upload error');
+			}
+	
+		});
+	})
+
+	response.send("successful");
 });
 
 
