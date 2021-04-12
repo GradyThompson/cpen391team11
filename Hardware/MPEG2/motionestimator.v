@@ -48,7 +48,7 @@ module motionestimator(
 	// Current and old accumulator values
 	wire [17:0] accum, oldaccum;
 	reg  [17:0] next_accum;
-	wire wren, mreq;
+	wire wren, mreq, cmp_rdy, valid;
 	reg cmp_en, wsel, dsel;
 
 	// Current state
