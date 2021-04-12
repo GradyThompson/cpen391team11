@@ -1,7 +1,6 @@
 /*
  * This activity represents the initial connecting screen of the app
- * It has three UI elements, a Button connecting leading to a Bluetooth
- * connection screen, one that downloads videos from the remote server,
+ * It has 2 UI elements, a that downloads videos from the remote server,
  * And one that connects to the list of downloaded recordings
  *
  */

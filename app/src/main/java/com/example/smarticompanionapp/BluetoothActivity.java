@@ -1,6 +1,7 @@
 /*
  * This activity contains a screen that allows for the pairing of
  * bluetooth devices to the the app.
+ * Could not get bluetooth working, therefore this activity is unused
  *
  */
 

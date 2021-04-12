@@ -50,12 +50,19 @@ public class RecordingsActivity extends AppCompatActivity {
         toolbar.setTitle("Recordings");
         setSupportActionBar(toolbar);
 
+        ImageButton settingsButton = (ImageButton) findViewById(R.id.settingsButton);
+        settingsButton.setImageResource(R.drawable.ic_settings_icon);
+        settingsButton.setVisibility(View.VISIBLE);
+        settingsButton.setOnClickListener(view -> {
+            Intent settingsIntent = new Intent(RecordingsActivity.this, SettingsActivity.class);
+            startActivity(settingsIntent);
+        });
 
+        //Retrieves recording data from the database and puts it into a recording Array
         mRecordViewModel = new ViewModelProvider(this).get(RecordingViewModel.class);
         List<RecordingEntity> vidData = mRecordViewModel.getAllRecordings();
 
         for (int x = 0; x < vidData.size(); x++){
-            //Uri uri = videoData.get(x).getVideo();
             Uri uri = Uri.parse(vidData.get(x).uri);
             String date = vidData.get(x).date;
             Double severity = vidData.get(x).severity;
@@ -63,19 +70,19 @@ public class RecordingsActivity extends AppCompatActivity {
             recArray.add(new Recording(date, severity, length, uri));
         }
 
-        recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, recArray.getVideoDataList(), recArray, mRecordViewModel);
+        //view adaptor for recordings
+        recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1,
+                recArray.getVideoDataList(), recArray, mRecordViewModel);
         Log.d("TAG", recArray.getVideoData(0));
         System.out.println(recArray.getRecord(0).uri);
 
         ListView recordListView = (ListView) findViewById(R.id.recordings_list_view);
-
         recordListView.setAdapter(recordingsList);
 
 
-
-
         Spinner spinner = (Spinner) findViewById(R.id.spinner2);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_recordings, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sort_recordings, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -96,17 +103,6 @@ public class RecordingsActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        ImageButton settingsButton = (ImageButton) findViewById(R.id.settingsButton);
-        settingsButton.setImageResource(R.drawable.ic_settings_icon);
-        settingsButton.setVisibility(View.VISIBLE);
-        settingsButton.setOnClickListener(view -> {
-            Intent settingsIntent = new Intent(RecordingsActivity.this, SettingsActivity.class);
-            startActivity(settingsIntent);
-        });
-    }
 
     private void sortAll(Spinner spinner, int i) {
         recordingsList.sort(new Comparator<Recording>() {
