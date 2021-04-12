@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button connectButton = (Button) findViewById(R.id.connect_button);
         connectButton.setOnClickListener(v -> {
+            //if app has not been paired with a camera yet go to bluetooth
             if (cameraToken.getString("Token", null) == null) {
                 Intent bluetoothIntent = new Intent(MainActivity.this, BluetoothActivity.class);
                 startActivity(bluetoothIntent);
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //bypasses bluetooth if testing on emulator
         Button bypassButton = (Button) findViewById(R.id.bypass_button);
         bypassButton.setOnClickListener(v -> {
             getVideos();

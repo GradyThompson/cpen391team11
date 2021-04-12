@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
@@ -43,6 +44,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 import com.arthenica.mobileffmpeg.Config;
@@ -53,15 +56,16 @@ import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS;
 import static com.arthenica.mobileffmpeg.Config.getPackageName;
 
 
-public class RecordingsList extends ArrayAdapter<String> {
+public class RecordingsList extends ArrayAdapter<Recording> {
     private Context context;
     private RecordingsArray recArray;
-    private ArrayList<String> videoData;
+    public ArrayList<String> videoData;
     private RecordingViewModel mRecordViewModel;
 
     public RecordingsList (Context context, int textViewResourceId, ArrayList<String> VideoData,
-                           RecordingsArray recArray, RecordingViewModel mRecordViewModel) {
-        super(context, textViewResourceId, VideoData);
+                           RecordingsArray, RecordingViewModel mRecordViewModel) {
+        super(context, textViewResourceId, recArray.RecArray);
+        //super(context, textViewResourceId, VideoData);
         this.context = context;
         this.recArray = recArray;
         this.videoData = recArray.getVideoDataList();
@@ -96,6 +100,7 @@ public class RecordingsList extends ArrayAdapter<String> {
 
                 videoIntent.putExtra("vid", recArray.getRecord(position).uri);
                 videoIntent.putExtra("dt", videoData.get(position));
+                //System.out.println(recArray.getRecord(position).uri);
                 context.startActivity(videoIntent);
             });
 
