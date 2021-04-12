@@ -97,6 +97,7 @@ public class SettingsActivity extends AppCompatActivity {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
+            //use commit instead of apply since we want changes to show up immediately
             editor.commit();
 
             getSupportFragmentManager()
@@ -110,10 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
     public static class SettingsFragment extends PreferenceFragmentCompat {
         private ListPreference maxTime;
         private ListPreference minTime;
-        private ListPreference retTime;
-        private ListPreference bitrate;
         private SwitchPreferenceCompat pushNotif;
-        private SwitchPreferenceCompat physNotif;
         private ListPreference severityThres;
         private SettingsResult settings;
 
@@ -150,23 +148,6 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            retTime = getPreferenceManager().findPreference("retention_time");
-            retTime.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    settings.setSaveTime(Integer.parseInt((String) newValue));
-                    return true;
-                }
-            });
-
-            bitrate = getPreferenceManager().findPreference("bitrate");
-            bitrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    settings.setBitRate(Integer.parseInt((String) newValue));
-                    return true;
-                }
-            });
 
             pushNotif = getPreferenceManager().findPreference("Push_notifications");
             pushNotif.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -177,14 +158,6 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            physNotif = getPreferenceManager().findPreference("Physical_notifications");
-            physNotif.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    settings.setPhysNotifs((Boolean) newValue);
-                    return true;
-                }
-            });
 
             severityThres = getPreferenceManager().findPreference("severity_threshold");
             severityThres.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

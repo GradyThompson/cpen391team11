@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         //bypasses bluetooth if testing on emulator
         Button bypassButton = (Button) findViewById(R.id.bypass_button);
         bypassButton.setOnClickListener(v -> {
-            getVideos();
+            getVideos(this);
         });
 
         Button viewRecButton = (Button) findViewById(R.id.view_rec_button);
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
      * the associated data into a RecordingEntity that gets placed into a local database,
      * to be used by the RecordingsActivity
      */
-    private void getVideos() {
+    private void getVideos(Context context) {
         final Gson g = new Gson();
         final JSONArray object = new JSONArray();
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
@@ -130,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             Log.d("JsonArray", response.toString());
                             mRecordViewModel.deleteAll();
+                            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject jresponse = response.getJSONObject(i);
@@ -138,6 +140,19 @@ public class MainActivity extends AppCompatActivity {
                                 String date = jresponse.get("Date").toString();
                                 String severity = jresponse.get("Severity").toString();
                                 String length = jresponse.get("Length").toString();
+
+                                //check if length follows the requirements in settings
+                                //-1 is a special value that corresponds to no limit
+                                double maxTime = Double.parseDouble(pref.getString("max_time","defaultValue"));
+                                double minTime = Double.parseDouble(pref.getString("min_time","defaultValue"));
+                                String[] parsedLength = length.split(":");
+                                if (maxTime != -1 & !(Double.parseDouble(parsedLength[parsedLength.length-2]) < maxTime)) {
+                                    continue;
+                                }
+                                if (minTime != -1 & (Double.parseDouble(parsedLength[parsedLength.length-2]) < 1
+                                    & (Double.parseDouble(parsedLength[parsedLength.length-1]) < minTime))) {
+                                    continue;
+                                }
 
                                 StorageReference ref = storage.getReferenceFromUrl(url);
                                 File localFile = File.createTempFile("video" + i, "mp4");
