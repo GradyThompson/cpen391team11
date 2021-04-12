@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         //the line above caused the app to crash, commented it out to work on other parts of the app
 
         Button connectButton = (Button) findViewById(R.id.connect_button);
+        connectButton.setVisibility(View.GONE);
         connectButton.setOnClickListener(v -> {
             //if app has not been paired with a camera yet go to bluetooth
             if (cameraToken.getString("Token", null) == null) {
