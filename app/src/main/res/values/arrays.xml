@@ -5,6 +5,7 @@
         <item>2 minutes</item>
         <item>3 minutes</item>
         <item>4 minutes</item>
+        <item>no limit</item>
     </string-array>
 
     <string-array name="max_time_values">
@@ -12,10 +13,12 @@
         <item>2</item>
         <item>3</item>
         <item>4</item>
+        <item>-1</item>
     </string-array>
 
     <!-- Min recording time preference -->
     <string-array name="min_time_entries">
+        <item>no limit</item>
         <item>10 seconds</item>
         <item>15 seconds</item>
         <item>30 seconds</item>
@@ -23,10 +26,11 @@
     </string-array>
 
     <string-array name="min_time_values">
+        <item>-1</item>
         <item>10</item>
         <item>15</item>
         <item>30</item>
-        <item>60</item>
+        <item>59</item>
     </string-array>
 
     <!-- Recording retention time preference -->

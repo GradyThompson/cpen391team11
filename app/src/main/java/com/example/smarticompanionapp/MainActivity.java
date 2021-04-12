@@ -1,9 +1,9 @@
 /*
  * This activity represents the initial connecting screen of the app
- * Has one UI element, a button that when pressed, tries to connect the app
- * to the hardware device through bluetooth/wifi, then goes to the recordings screen
+ * It has three UI elements, a Button connecting leading to a Bluetooth
+ * connection screen, one that downloads videos from the remote server,
+ * And one that connects to the list of downloaded recordings
  *
- * As of this moment the button just connects to the recordings activity
  */
 
 package com.example.smarticompanionapp;
@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -75,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
         cameraToken = getSharedPreferences("label", Context.MODE_PRIVATE);
         String token = FirebaseInstanceId.getInstance().getToken();
-        //Log.d("TOKEN", token);
-        //the line above caused the app to crash, commented it out to work on other parts of the app
 
         Button connectButton = (Button) findViewById(R.id.connect_button);
         connectButton.setVisibility(View.GONE);
@@ -86,20 +85,20 @@ public class MainActivity extends AppCompatActivity {
                 Intent bluetoothIntent = new Intent(MainActivity.this, BluetoothActivity.class);
                 startActivity(bluetoothIntent);
             } else {
-                getVideos();
+                Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
+                startActivity(recordingsIntent);
             }
         });
 
         //bypasses bluetooth if testing on emulator
         Button bypassButton = (Button) findViewById(R.id.bypass_button);
         bypassButton.setOnClickListener(v -> {
-            getVideos();
+            getVideos(this);
         });
 
         Button viewRecButton = (Button) findViewById(R.id.view_rec_button);
         viewRecButton.setOnClickListener(v -> {
             Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
-            //recordingsIntent.putParcelableArrayListExtra("videos", (ArrayList<? extends Parcelable>) videoList);
             startActivity(recordingsIntent);
         });
 
@@ -107,12 +106,22 @@ public class MainActivity extends AppCompatActivity {
         mRecordViewModel = new ViewModelProvider(this).get(RecordingViewModel.class);
     }
 
-    private void getVideos() {
+    /*
+     * This method downloads recordings and their associated data from the server.
+     *
+     * It obtains the fields of interest, saving the video to local storage and placing
+     * the associated data into a RecordingEntity that gets placed into a local database,
+     * to be used by the RecordingsActivity
+     */
+    private void getVideos(Context context) {
         final Gson g = new Gson();
         final JSONArray object = new JSONArray();
         final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         String url = "http://35.239.13.217:3000/getVid";
 
+        Toast toast = Toast.makeText(MainActivity.this,
+                "downloading videos", Toast.LENGTH_SHORT);
+        toast.show();
 
         final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, object,
                 new Response.Listener<JSONArray>() {
@@ -123,16 +132,28 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             Log.d("JsonArray", response.toString());
                             mRecordViewModel.deleteAll();
+                            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+
                             for (int i = 0; i < response.length(); i++) {
-                                Toast toast = Toast.makeText(MainActivity.this,
-                                        "downloading videos", Toast.LENGTH_SHORT);
-                                toast.show();
                                 JSONObject jresponse = response.getJSONObject(i);
                                 String url = jresponse.get("Url").toString();
                                 //System.out.println(url);
                                 String date = jresponse.get("Date").toString();
                                 String severity = jresponse.get("Severity").toString();
                                 String length = jresponse.get("Length").toString();
+
+                                //check if length follows the requirements in settings
+                                //-1 is a special value that corresponds to no limit
+                                double maxTime = Double.parseDouble(pref.getString("max_time","defaultValue"));
+                                double minTime = Double.parseDouble(pref.getString("min_time","defaultValue"));
+                                String[] parsedLength = length.split(":");
+                                if (maxTime != -1 & !(Double.parseDouble(parsedLength[parsedLength.length-2]) < maxTime)) {
+                                    continue;
+                                }
+                                if (minTime != -1 & (Double.parseDouble(parsedLength[parsedLength.length-2]) < 1
+                                    & (Double.parseDouble(parsedLength[parsedLength.length-1]) < minTime))) {
+                                    continue;
+                                }
 
                                 StorageReference ref = storage.getReferenceFromUrl(url);
                                 File localFile = File.createTempFile("video" + i, "mp4");
@@ -153,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
 
+                                //crude way to do this, but design requires that download tasks
+                                //are complete before progressing
                                 while(!task.isComplete()){
                                 }
 
@@ -173,11 +196,6 @@ public class MainActivity extends AppCompatActivity {
                             Toast toast = Toast.makeText(MainActivity.this,
                                     "Videos downloaded", Toast.LENGTH_SHORT);
                             toast.show();
-                            //videoList = Arrays.asList(g.fromJson(response.get("").toString(), VideoResult[].class));
-                            //Intent recordingsIntent = new Intent(MainActivity.this, RecordingsActivity.class);
-                            //recordingsIntent.putParcelableArrayListExtra("videos", (ArrayList<? extends Parcelable>) videoList);
-                            //startActivity(recordingsIntent);
-
 
                             Log.d("GETREQUEST", "successful");
                         } catch (JSONException | IOException e) {

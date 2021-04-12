@@ -1,4 +1,6 @@
-
+/*
+ * Tests involving the RecordingsArray data structure
+ */
 
 package com.example.smarticompanionapp;
 
@@ -61,7 +63,8 @@ public class RecordingsArrayTest {
 
     }
 
-    //Test that adding sort the recordings and recording data in order
+    //Test that adding puts the recordings and recording data in order
+    //based on severity
     @Test
     public void AddTest(){
         recArray.add(rec3);

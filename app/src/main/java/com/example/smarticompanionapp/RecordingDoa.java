@@ -1,3 +1,12 @@
+/*
+ *  This Interface is a data access object that serves
+ *  to provide the template for the interaction methods
+ *  with the local recordings database
+ *
+ *  The methods are straightforward in function, based
+ * on their names
+ */
+
 package com.example.smarticompanionapp;
 
 import androidx.lifecycle.LiveData;

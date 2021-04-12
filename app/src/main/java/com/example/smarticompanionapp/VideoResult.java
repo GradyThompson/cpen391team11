@@ -1,3 +1,7 @@
+//This class represents a data structure used to pass data about
+//recordings between activities.
+//It is now unused as it has been replaced by the persistent local database
+
 package com.example.smarticompanionapp;
 
 import android.net.Uri;

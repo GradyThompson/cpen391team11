@@ -1,7 +1,7 @@
 /*
- * This activity represents the Recordings screen of the app
- * Contains a scrollable list of recordings that are sorted based on severity
- * Has a button in the top right that brings up the settings activity.
+ * This activity contains a screen that allows for the pairing of
+ * bluetooth devices to the the app.
+ *
  */
 
 package com.example.smarticompanionapp;

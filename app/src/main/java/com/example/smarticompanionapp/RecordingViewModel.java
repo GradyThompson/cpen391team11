@@ -1,12 +1,17 @@
+/*
+ *  This class allows activities to interact with the local
+ *  recording database. When a method within an activity wishes
+ *  to interact with the database, it should instantiate an instance
+ *  of this
+ */
+
 package com.example.smarticompanionapp;
 
 import android.app.Application;
 import android.net.Uri;
 
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 
-import java.lang.invoke.WrongMethodTypeException;
 import java.util.List;
 
 public class RecordingViewModel extends AndroidViewModel {

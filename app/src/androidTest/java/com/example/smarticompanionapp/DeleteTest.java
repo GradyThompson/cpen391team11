@@ -21,6 +21,9 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
+//simple deletion test, most testing has been done by hand to ensure
+//proper functionality using encoded examples, but this performs an example of
+//instrumenting an element
 public class DeleteTest {
     @Rule
     public ActivityTestRule<RecordingsActivity> activityRule =

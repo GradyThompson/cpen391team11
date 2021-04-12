@@ -19,21 +19,7 @@
             app:title="@string/Min_time_title"
             app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="14"
-            app:entries="@array/retention_time_entries"
-            app:entryValues="@array/retention_time_values"
-            app:key="retention_time"
-            app:title="@string/Retention_time_title"
-            app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="1000"
-            app:entries="@array/bitrate_entries"
-            app:entryValues="@array/bitrate_values"
-            app:key="bitrate"
-            app:title="@string/bitrate_title"
-            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
@@ -44,13 +30,6 @@
             app:title="@string/Push_notifications_title"
             app:defaultValue="true"/>
 
-        <SwitchPreferenceCompat
-            android:id="@+id/switchPreferenceCompat"
-            app:defaultValue="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:key="Physical_notifications"
-            app:title="@string/Physical_notifications_title" />
 
         <ListPreference
             app:title="@string/Severity_title"

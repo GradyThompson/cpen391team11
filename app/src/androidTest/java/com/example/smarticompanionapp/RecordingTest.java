@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
 
+//Simple test that creates a recording based on an example video file and data,
+//and checks that the fields have been created properly
 public class RecordingTest {
 
     @Test
@@ -37,14 +39,15 @@ public class RecordingTest {
 
             recording = new Recording("today", 10.0, "30:00",
                     Uri.parse(video.getAbsolutePath()));
+
+            assert(recording.videoData.equals("Severity: 10.0, Date: today, Length: 30:00"));
+            assert(recording.thumbnail != null);
+            assert(recording.uri.equals(Uri.parse(video.getAbsolutePath())));
+            assert(recording.severity.equals(10.0));
         } catch (
                 IOException e) {
             Log.i(Config.TAG, "IO fail");
         }
 
-        assert(recording.videoData.equals("Severity: 10.0, Date: today, Length: 30:00"));
-        assert(recording.thumbnail != null);
-        assert(recording.uri != null);
-        assert(recording.severity.equals(10.0));
     }
 }
