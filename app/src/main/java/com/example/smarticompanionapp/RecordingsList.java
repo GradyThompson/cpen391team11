@@ -4,9 +4,7 @@
  * and an ArrayList with strings consisting of the data about a video that we wish to display.
  *
  * Has three components, the video thumbnail, video data and a options menu button
- * currently the video thumbnail is a placeholder
- * The options menu popup also has placeholder functionality
- * Will need to add interaction with a video data type
+ * The options menu popup supports the playing, exporting and deleting of recordings
  */
 
 package com.example.smarticompanionapp;
@@ -35,6 +33,7 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,24 +55,17 @@ import static com.arthenica.mobileffmpeg.Config.getPackageName;
 
 public class RecordingsList extends ArrayAdapter<String> {
     private Context context;
-    private ArrayList<VideoResult> VideoArray;
     private RecordingsArray recArray;
     private ArrayList<String> videoData;
     private RecordingViewModel mRecordViewModel;
 
-    /*
-    public RecordingsList (Context context, int textViewResourceId, ArrayList<VideoResult> VideoArray) {
-        super(context, textViewResourceId, VideoArray);
-        this.context = context;
-        this.VideoArray = VideoArray;
-    }
-    */
-    public RecordingsList (Context context, int textViewResourceId, ArrayList<String> VideoData, RecordingsArray recArray) {
+    public RecordingsList (Context context, int textViewResourceId, ArrayList<String> VideoData,
+                           RecordingsArray recArray, RecordingViewModel mRecordViewModel) {
         super(context, textViewResourceId, VideoData);
         this.context = context;
-        //this.VideoData = VideoArray;
         this.recArray = recArray;
         this.videoData = recArray.getVideoDataList();
+        this.mRecordViewModel = mRecordViewModel;
     }
 
     @Override
@@ -82,16 +74,13 @@ public class RecordingsList extends ArrayAdapter<String> {
         View row = inflater.inflate(R.layout.list_row, parent, false);
 
         ImageView thumbnail = (ImageView) row.findViewById(R.id.thumbnail);
-        //thumbnail.setImageResource(R.drawable.ic_launcher_foreground); //placeholder, should have video thumbnail
         thumbnail.setImageBitmap(recArray.getRecord(position).thumbnail);
         thumbnail.setVisibility(View.VISIBLE);
 
         TextView data = (TextView) row.findViewById(R.id.videoData);
-        //data.setText((VideoArray.get(position).getDateTime()));
         data.setText(videoData.get(position));
 
         ImageButton optionIcon = (ImageButton) row.findViewById(R.id.optionsIcon);
-        //optionIcon.setVisibility(View.VISIBLE);
         optionIcon.setImageResource(R.drawable.ic_action_name);
 
 
@@ -99,18 +88,23 @@ public class RecordingsList extends ArrayAdapter<String> {
          * This is used to generate the dialog box with play/export/delete options
          */
         optionIcon.setOnClickListener(v -> {
+
+            //creates and switches to the videoPlayer
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setNeutralButton("Play", (dialog, which) -> {
                 Intent videoIntent = new Intent(parent.getContext(), VideoActivity.class);
-                /*
-                videoIntent.putExtra("vid", VideoArray.get(position).getVideo());
-                videoIntent.putExtra("dt", VideoArray.get(position).getDateTime());
-                 */
+
                 videoIntent.putExtra("vid", recArray.getRecord(position).uri);
                 videoIntent.putExtra("dt", videoData.get(position));
-                //System.out.println(recArray.getRecord(position).uri);
                 context.startActivity(videoIntent);
             });
+
+            /*
+             *  This provides the functionality to export videos to the android
+             *      device's image gallery
+             *  Takes the video of interest, then writes it to a location viewable
+             *      by the android gallery, where the user is free to do with, as they please
+             */
             builder.setPositiveButton("Export", (dialog, which) -> {
 
                 String state = Environment.getExternalStorageState();
@@ -161,9 +155,14 @@ public class RecordingsList extends ArrayAdapter<String> {
                 context.getContentResolver().update(uriSavedVideo, valuesvideos, null, null);
 
             });
+            /*
+             *  Provides the functionality to delete a recording and its local data
+             *  Must remove the entry from this RecordingList,
+             *  remove the associated RecordingEntity from the database,
+             *  remove the associated recording from the recordingArray,
+             *  then update the UI view to reflect changes
+             */
             builder.setNegativeButton("Delete", (dialog, which) -> {
-                //Toast toast = Toast.makeText(context.getApplicationContext(),"delete video placeholder", Toast.LENGTH_SHORT);
-                //toast.show();
                 this.remove(this.getItem(position));
                 mRecordViewModel.deleteByUri(recArray.getRecord(position).uri);
                 recArray.delete(position);

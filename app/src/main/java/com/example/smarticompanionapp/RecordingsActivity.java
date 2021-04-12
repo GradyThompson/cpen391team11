@@ -12,8 +12,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -43,24 +41,6 @@ public class RecordingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        //will need to populate list with data on runtime, probably put up a loading screen
-        //while retrieving recordings
-
-       // try {
-            /*
-            InputStream vid = RecordingsActivity.this.getResources().openRawResource(R.raw.test_video_0);
-            File video = new File(RecordingsActivity.this.getFilesDir(), "test_video_0.mp4");
-            OutputStream vidout = new FileOutputStream(video);
-
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = vid.read(buffer)) != -1) {
-                vidout.write(buffer, 0, bytesRead);
-            }
-            */
-
-        //videoData = getIntent().getParcelableArrayListExtra("videos");
-
         mRecordViewModel = new ViewModelProvider(this).get(RecordingViewModel.class);
         List<RecordingEntity> vidData = mRecordViewModel.getAllRecordings();
 
@@ -73,7 +53,7 @@ public class RecordingsActivity extends AppCompatActivity {
             recArray.add(new Recording(date, severity, length, uri));
         }
 
-        recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, recArray.getVideoDataList(), recArray);
+        recordingsList = new RecordingsList(this, android.R.layout.simple_list_item_1, recArray.getVideoDataList(), recArray, mRecordViewModel);
         Log.d("TAG", recArray.getVideoData(0));
         System.out.println(recArray.getRecord(0).uri);
 
@@ -81,7 +61,6 @@ public class RecordingsActivity extends AppCompatActivity {
 
         recordListView.setAdapter(recordingsList);
 
-        //recordingsList.notifyDataSetChanged();
 
     }
 

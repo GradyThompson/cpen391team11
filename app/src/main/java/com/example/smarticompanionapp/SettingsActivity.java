@@ -1,3 +1,12 @@
+/*
+ * This class represents the Settings screen and its the methods required to send
+ * settings to the desired remote location
+ *
+ * Powered by 2 xml files, settings_activity which provides the
+ * Buttons at the bottom of the screen, and root_preferences.xml,
+ * which provides for the different settings options
+ */
+
 package com.example.smarticompanionapp;
 
 import android.app.FragmentTransaction;
@@ -59,6 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
             actionBar.setTitle("Settings");
         }
 
+        //submits the saved preferences to the required remote location
         Button submitButton = (Button) findViewById(R.id.submit);
         submitButton.setOnClickListener(v -> {
             final Gson g = new Gson();
@@ -81,6 +91,7 @@ public class SettingsActivity extends AppCompatActivity {
             queue.add(jsonObjectRequest);
         });
 
+        //Returns all settings to their defaults and reloads the preference fragment
         Button defaultButton = (Button) findViewById(R.id.defaultButton);
         defaultButton.setOnClickListener(v -> {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -112,14 +123,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         /*
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-            View retView = inflater.inflate(R.layout.settings_activity, container, false);
-            return retView;
-        }
-        */
-        //moved settings stuff to an onViewCreated since onCreateView was causing some issues
+         * this method obtains the required preference fields and puts them into an object
+         * to store them temporarily
+         */
         @Override
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);

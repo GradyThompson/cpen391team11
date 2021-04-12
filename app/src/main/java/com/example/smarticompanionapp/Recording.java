@@ -1,6 +1,7 @@
 /*
  * This class is used to interface with recordings, and provide the necessary data to allow
- * the recordings list to function
+ * the recordings list to function. It represents a recording within our app, with all of
+ * the associated data that we wish to display to the user
  */
 
 package com.example.smarticompanionapp;
@@ -15,7 +16,6 @@ import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
 
-import java.io.File;
 
 public class Recording {
 
@@ -23,11 +23,9 @@ public class Recording {
      *  This data type contains the following entries:
      *  VideoData is a string containing the date the video
      *      was recorded, the length of the video, and the severity
-     *  uri contains the file path for the video, should not be a path
-     *      to an mpeg-2 file since the android videoplayer does not support
-     *      this format, the video will need to be converted into a compatible format
-     *      (mp4 maybe) before being  inserted
-     *  Thumbnail is a thumbnail created from the video
+     *  uri contains the file path for the mp4 video obtained from the server
+     *  Thumbnail is a thumbnail created from the video, is created when the
+     *      recording is instantiated
      *  Severity is the calculated severity of the video
      */
     public String videoData;
@@ -49,6 +47,12 @@ public class Recording {
         thumbnail = null;
     }
 
+    /*
+     * Simple equality operator, checks that the fields are equal
+     * Recording objects that represent the same video, but have the
+     * video saved in different location (ie. different URIs), are
+     * considered to be different recordings
+     */
     @Override
     public boolean equals(@Nullable Object obj) {
         if(obj != null && getClass() == obj.getClass()) {

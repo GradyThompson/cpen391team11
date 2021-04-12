@@ -13,6 +13,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+//Simple UI test that ensures all settings UI elements perform as expected,
+//and that setting default works
+
 public class SettingsTest {
     @Rule
     public ActivityTestRule<SettingsActivity> activityRule =
@@ -41,7 +44,6 @@ public class SettingsTest {
         onView(withText("Until manual deletion")).check(matches(isDisplayed()));
     }
 
-    //not going to check video bitrate for now since it has placeholder values
 
     @Test
     public void settingsTest4() throws InterruptedException {
@@ -52,6 +54,7 @@ public class SettingsTest {
         onView(withText("10/10")).check(matches(isDisplayed()));
     }
 
+    //check default
     @Test
     public void settingsTest5() throws InterruptedException {
         onView(withId(R.id.defaultButton)).perform(click());
@@ -62,5 +65,4 @@ public class SettingsTest {
         onView(withText("3/10")).check(matches(isDisplayed()));
     }
 
-    //Should have a test for the send button, when it works
 }

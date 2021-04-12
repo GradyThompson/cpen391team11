@@ -1,3 +1,8 @@
+/*
+ * Represents an object that encapsulates all of the fields that we wish to send
+ * and save through the settings
+ */
+
 package com.example.smarticompanionapp;
 
 public class SettingsResult {

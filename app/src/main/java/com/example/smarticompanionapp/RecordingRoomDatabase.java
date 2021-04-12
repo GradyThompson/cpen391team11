@@ -1,12 +1,24 @@
+/*
+ *  This represents the local database that contains RecordingEntities
+ *  that store information about recordings. There should only be one
+ *  instance of this present, connected to all activities.
+ *
+ *  Main thread queries are allowed, since the functionality required
+ *  of this database needs interactions with the database to be completed
+ *  synchronously
+ *
+ *  This database is used to store data persistently, allowing data to
+ *  remain between sessions, avoiding a previous implementation where
+ *  the remote server was quarried every time the recordingsActivity was called
+ */
+
 package com.example.smarticompanionapp;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

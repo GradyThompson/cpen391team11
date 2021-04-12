@@ -1,8 +1,7 @@
 /*
- *  This Class is used to structure recordings so that recordings as a whole can be more
- *  easily utilized by the app.
+ *  This Class is used to structure recordings and to present them
+ *  in a format that will be easily interpretable by ui elements
  */
-
 
 package com.example.smarticompanionapp;
 
@@ -19,8 +18,8 @@ public class RecordingsArray {
     * Both arrays should be sorted so that the highest severity recordings go in front
     * There should be no duplicate entries*/
 
-    //these will be public now for easy testing, later might want them to be private to prevent
-    //exposing these arrays directly
+    //these are public for the sake of accessibility, but should only be
+    //interacted with through the provided methods
     public LinkedList<Recording> RecArray = new LinkedList<>();
     public ArrayList<String> videoDataList = new ArrayList<>();
 
@@ -77,6 +76,8 @@ public class RecordingsArray {
      *  Since there should be no repeats, just deletes first object matching
      *  Returns 1 if the recording has been deletes, 0 if no matching recordings are found
      *  Recordings will still remain on the remote storage
+     *  Does not remove the associated RecordingEntity from the local database,
+     *  should be completed by a separate delete call to the database
      */
     public int delete(Recording recording) {
         if (remove(recording) == 1) {
@@ -118,6 +119,7 @@ public class RecordingsArray {
     /*
      *  Returns a copy of the videoData array
      *  Be careful when using this, copy does not update with the RecordingsArray
+     *  This will mostly be used to provide the required list ot the RecordingsList adaptor
      */
     public ArrayList<String> getVideoDataList(){
         return new ArrayList<>(videoDataList);

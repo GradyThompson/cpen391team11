@@ -25,7 +25,7 @@ public class VideoTest {
 
     @Test
     public void chatTest() throws InterruptedException {
-        onView(withId(R.id.bypass_button))
+        onView(withId(R.id.view_rec_button))
                 .perform(click());
 
         Thread.sleep(2000);

@@ -1,8 +1,12 @@
+/*
+ * This class represents a repository, and acts as a wrapper for the
+ * local recordings database. It provides functionality to the
+ * RecordingDoa methods
+ */
+
 package com.example.smarticompanionapp;
 
 import android.app.Application;
-
-import androidx.lifecycle.LiveData;
 
 import java.util.List;
 

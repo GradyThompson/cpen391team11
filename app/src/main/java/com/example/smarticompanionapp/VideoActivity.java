@@ -1,3 +1,8 @@
+/*
+ * This activity represents the video player, allowing the viewing
+ * of recordings within the app
+ */
+
 package com.example.smarticompanionapp;
 
 import android.net.Uri;
