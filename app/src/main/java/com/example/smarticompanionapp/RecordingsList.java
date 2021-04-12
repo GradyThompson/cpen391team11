@@ -63,7 +63,7 @@ public class RecordingsList extends ArrayAdapter<Recording> {
     private RecordingViewModel mRecordViewModel;
 
     public RecordingsList (Context context, int textViewResourceId, ArrayList<String> VideoData,
-                           RecordingsArray, RecordingViewModel mRecordViewModel) {
+                           RecordingsArray recArray, RecordingViewModel mRecordViewModel) {
         super(context, textViewResourceId, recArray.RecArray);
         //super(context, textViewResourceId, VideoData);
         this.context = context;
@@ -168,10 +168,10 @@ public class RecordingsList extends ArrayAdapter<Recording> {
              *  then update the UI view to reflect changes
              */
             builder.setNegativeButton("Delete", (dialog, which) -> {
+                mRecordViewModel.deleteByUri(this.getItem(position).uri);
+                //recArray.delete(this.getItem(position));
+                //videoData = recArray.getVideoDataList();
                 this.remove(this.getItem(position));
-                mRecordViewModel.deleteByUri(recArray.getRecord(position).uri);
-                recArray.delete(position);
-                videoData = recArray.getVideoDataList();
                 this.notifyDataSetChanged();
             });
 

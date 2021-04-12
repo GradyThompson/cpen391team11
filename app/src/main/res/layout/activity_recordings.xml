@@ -47,19 +47,17 @@
             android:id="@+id/settingsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="32dp"
+            android:constantSize="false"
 
+            android:layout_marginEnd="24dp"
             android:layout_marginBottom="28dp"
             android:background="?android:selectableItemBackground"
-            android:constantSize="false"
             android:contentDescription="@string/settings_button"
-            android:src="@drawable/ic_settings_icon"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:srcCompat="@drawable/ic_settings_icon"
             app:layout_constraintBottom_toTopOf="@+id/spinner2"
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.023" />
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
