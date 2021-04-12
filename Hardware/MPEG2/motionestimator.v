@@ -143,6 +143,8 @@ module motionestimator(
 		next_state = state;
 		next_cc = wcc;
 		cc = bcc;
+		cmp_en = 1'b0;
+		writedata = 8'd0;
 		case (state)
 			4'h0: begin // Reset state
 				rdy = 1'b1;
