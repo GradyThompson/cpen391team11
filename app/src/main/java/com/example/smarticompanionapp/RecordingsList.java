@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 
@@ -44,6 +45,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 import com.arthenica.mobileffmpeg.Config;
@@ -54,11 +57,11 @@ import static com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS;
 import static com.arthenica.mobileffmpeg.Config.getPackageName;
 
 
-public class RecordingsList extends ArrayAdapter<String> {
+public class RecordingsList extends ArrayAdapter<Recording> {
     private Context context;
     private ArrayList<VideoResult> VideoArray;
     private RecordingsArray recArray;
-    private ArrayList<String> videoData;
+    public ArrayList<String> videoData;
     private RecordingViewModel mRecordViewModel;
 
     /*
@@ -69,7 +72,7 @@ public class RecordingsList extends ArrayAdapter<String> {
     }
     */
     public RecordingsList (Context context, int textViewResourceId, ArrayList<String> VideoData, RecordingsArray recArray) {
-        super(context, textViewResourceId, VideoData);
+        super(context, textViewResourceId, recArray.RecArray);
         this.context = context;
         //this.VideoData = VideoArray;
         this.recArray = recArray;

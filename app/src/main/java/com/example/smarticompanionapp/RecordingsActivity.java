@@ -18,10 +18,20 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
+import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class RecordingsActivity extends AppCompatActivity {
@@ -83,6 +93,28 @@ public class RecordingsActivity extends AppCompatActivity {
 
         //recordingsList.notifyDataSetChanged();
 
+
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner2);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_recordings, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                sortAll(spinner, i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                recordingsList.sort(new Comparator<Recording>() {
+                    @Override
+                    public int compare(Recording recording, Recording t1) {
+                        return recording.severity.compareTo(t1.severity);
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -95,6 +127,60 @@ public class RecordingsActivity extends AppCompatActivity {
             Intent settingsIntent = new Intent(RecordingsActivity.this, SettingsActivity.class);
             startActivity(settingsIntent);
         });
+    }
+
+    private void sortAll(Spinner spinner, int i) {
+        recordingsList.sort(new Comparator<Recording>() {
+            @Override
+            public int compare(Recording recording, Recording t1) {
+                String date1 = recording.videoData.split(", Date: ")[1].split(", Length: ")[0];
+                String date2 = t1.videoData.split(", Date: ")[1].split(", Length: ")[0];
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+                Date d1 = null;
+                Date d2 = null;
+                try {
+                    d1 = format.parse(date1);
+                    d2 = format.parse(date2);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (spinner.getItemAtPosition(i).equals("Most Recent")) {
+                    return -d1.compareTo(d2);
+                } else if (spinner.getItemAtPosition(i).equals("Least Recent")) {
+                    return d1.compareTo(d2);
+                } else {
+                    return -recording.severity.compareTo(t1.severity);
+                }
+            }
+        });
+
+        Collections.sort(recordingsList.videoData, new Comparator<String>() {
+            @Override
+            public int compare(String string, String t1) {
+                String date1 = string.split(", Date: ")[1].split(", Length: ")[0];
+                String date2 = t1.split(", Date: ")[1].split(", Length: ")[0];
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date d1 = null;
+                Date d2 = null;
+                try {
+                    d1 = format.parse(date1);
+                    d2 = format.parse(date2);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (spinner.getItemAtPosition(i).equals("Most Recent")) {
+                    return -d1.compareTo(d2);
+                } else if (spinner.getItemAtPosition(i).equals("Least Recent")) {
+                    return d1.compareTo(d2);
+                } else {
+                    String severity1 = string.split("Severity: ")[1].split(", Date: ")[0];
+                    String severity2 = t1.split("Severity: ")[1].split(", Date: ")[0];
+                    return -severity1.compareTo(severity2);
+                }
+            }
+        });
+
+        recordingsList.notifyDataSetChanged();
     }
 
 }
