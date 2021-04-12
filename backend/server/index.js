@@ -150,6 +150,10 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 	var date = req.body.date;
 	var length = req.body.length;
 
+	if (date == undefined || length == undefined) {
+		response.status(400).send({ "message": "date/length fields are not valid" });
+	}
+
 	console.log(date);
 	console.log(length);
 	
@@ -164,6 +168,7 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 		bucket.upload(outFile, function(err, file, apiResponse) {
 			if (err) {
 				console.log('upload error');
+				response.status(400).send({ "message": "date/length fields are not valid" });
 			}
 	
 		});
@@ -188,6 +193,7 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 					throw err;
 				}
 				else {
+					console.log("successful!")
 					response.status(200).send({ success: true });
 				}
 			});
