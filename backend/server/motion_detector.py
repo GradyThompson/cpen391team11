@@ -10,12 +10,16 @@ cap = cv2.VideoCapture(sys.argv[1])
 #cap = cv2.VideoCapture('server/vtest.avi')
 ret, first = cap.read()
 
+date = sys.argv[2]
+hh = date[11:13] if date[11] != '0' else date[12:13]
+mm = date[14:16] if date[14] != '0' else date[15:16]
+
 first_gray = cv2.cvtColor(first, cv2.COLOR_BGR2GRAY)
 first_gray = cv2.GaussianBlur(first_gray, (21, 21), 0)
 
-userStart = time(hour = 9, minute = 0)
-userEnd = time(hour = 15, minute = 0)
-recordTime = time(hour =12, minute = 30)
+userStart = time(hour = 22, minute = 0)
+userEnd = time(hour = 6, minute = 0)
+recordTime = time(hour = int(hh), minute = int(mm))
 
 timeInRange = utils.checkTime(userStart, userEnd, recordTime)
 
@@ -109,10 +113,9 @@ while True:
     sizeScore += frameScore
     mvScore += frameMvScore
 
-    #cv2.imshow('Frame', frame)
-    #cv2.imshow('FG MASK Frame', thresh)
-    #cv2.imshow('FG MASK delta', frameDelta)
-
+    cv2.imshow('Frame', frame)
+    cv2.imshow('FG MASK Frame', thresh)
+    cv2.imshow('FG MASK delta', frameDelta)
 
     keyboard = cv2.waitKey(20)
     if keyboard == ord("q"):
@@ -130,8 +133,8 @@ mvScore = utils.scaleScore(mvScore)
 recordLength = int(frames / fps) / 60
 
 score = utils.severityCalculation(timeInRange, recordLength, sizeScore, mvScore)
-print(round(score/10, 1))
+print(int(round(score / 10)))
 sys.stdout.flush()
 
 cap.release()
-#cv2.destroyAllWindows()
+cv2.destroyAllWindows()

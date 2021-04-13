@@ -6,12 +6,12 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-var token = 'dKnkRUOpRNiyTUn69CbI0l:APA91bFsRxNvoalHRD_zImVuIvj3Vay-7dp_BGUGxx3gNi6Fn_Nsb6MqaofjbvO7dqrjCO5bfkDjBG5evtAaDRouEFPcQnfGk6kmwAWnnFsu_vdo3adkUf9do4go8iXd-mDRl98_bUm6';
+var token = 'cmRGIQ48Qd6EfZoxeh_6AI:APA91bE6NIDYJ831HAPnAzhoBNom2CXOTCYJfrKczGQCwcDwXRuAzbFG_bV-Az0_loUibG-QZoSTLcKA0rojPCtLZfVQLFjvv27uPUBzfrwT5n69-NIqL0xMMrVjLNm_hruYadr8TAPl';
 
 var message = {
     notification: {
-        title: "Hello",
-        body: "Test Pushnotification",
+        title: "Smarti Alert",
+        body: "A new video is available",
     }
 };
 

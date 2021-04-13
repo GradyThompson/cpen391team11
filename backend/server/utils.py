@@ -27,7 +27,7 @@ def scaleScore(score):
 def severityCalculation(timeInRange, recordLength, size, mv):
 	score = 0
 	if (timeInRange):
-		score += 50
+		score += 40
 
 	if (recordLength > 20):
 		score += 20

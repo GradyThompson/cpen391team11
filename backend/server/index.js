@@ -28,16 +28,17 @@ const upload = multer({storage: mstorage});
 
 var admin = require('firebase-admin');
 var serviceAccount = require('./firebasecpen391.json');
+const { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } = require('constants');
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
 	storageBucket: 'macro-dogfish-306517.appspot.com'
 });
 var bucket =  admin.storage().bucket();
 
-
+var registrationToken = 'cmRGIQ48Qd6EfZoxeh_6AI:APA91bE6NIDYJ831HAPnAzhoBNom2CXOTCYJfrKczGQCwcDwXRuAzbFG_bV-Az0_loUibG-QZoSTLcKA0rojPCtLZfVQLFjvv27uPUBzfrwT5n69-NIqL0xMMrVjLNm_hruYadr8TAPl';
 
 app.get('/', (req, res) => {
-    res.send('We are connected');
+	res.send("we are connected");
 });
 
 app.post('/auth/create', (req, response) => {
@@ -77,62 +78,6 @@ app.post('/auth/create', (req, response) => {
 	}
 });
 
-app.get('/test', (req, res) => {
-	var spawn = require("child_process").spawn;
-
-    var process = spawn('python3',["./hello.py",
-                            req.body.firstname,
-                            req.body.lastname] );
-  
-    // Takes stdout data from script which executed
-    // with arguments and send this data to res object
-    process.stdout.on('data', function(data) {
-        res.send(data.toString());
-    } )
-});
-
-app.post('/save', (req, response) => {
-
-	var inFile = "vtest.mpeg";
-	var outFile = "test1.mp4";
-
-	console.log("Got request... start converting");
-
-	const spawn = require("child_process").spawn;
-	const mt = spawn('python3', ['./motion_detector.py', 'vtest.mpeg']);
-
-	mt.stdout.on('data', (data) => {
-		console.log(data.toString());
-		response.send(data);
-	});
-
-	mt.stderr.on('data', (data) => {
-		console.log(data.toString());
-	});
-
-	ffmpeg(inFile).save(outFile);
-
-	// if (req.body.email == undefined || req.body.path == undefined || req.body.filename == undefined || req.body.date == undefined) {
-	// 	response.status(400).send({ "message": "fields are not valid" });
-	// } else {
-	// 	var fileDB = client.db("smarti").collection("file");
-	// 	fileDB.insertOne({
-	// 		Email: req.body.email,
-	// 		Path: req.body.path,
-	// 		FileName: req.body.filename,
-	// 		Date: req.body.date
-	// 	}, function (err) {
-	// 		if (err) {
-	// 			response.status(400).send({ "message": "Error occured when saving file info" }, 400);
-	// 			throw err;
-	// 		}
-	// 		else {
-	// 			response.status(200).send({ success: true });
-	// 		}
-	// 	});
-	// }
-});
-
 app.get('/getVid', (req, response) => {
 	var fileDB = client.db("smarti").collection("file");
 	fileDB.find({}, {projection: {_id: 0}}).toArray(function(error, documents) {
@@ -143,7 +88,26 @@ app.get('/getVid', (req, response) => {
 	
 });
 
-app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
+app.post('/setting', (req, response) => {
+	if (req.body.Threshold == undefined || req.body.Toggle == undefined) {
+		response.status(400).send({ "message": "Setting failed due to request fields not being valid" });
+	} else {
+		var userDB = client.db("smarti").collection("user");
+		userDB.insertOne({
+			Threshold: req.body.Threshold,
+			Notification: req.body.Toggle
+		}, function (err) {
+			if (err) {
+				response.status(400).send({ "message": "Error occured when changing settings" }, 400);
+				throw(err);
+			} else {
+				response.status(200).send({ "message": "Succesfully changed settings"});
+			}
+		});
+	}
+});
+
+app.post('/uploadvideo', upload.single('video'), (req, res, next) => {
 	console.log(req.file);
 
 	var inFile = path.parse(req.file.filename);
@@ -151,7 +115,7 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 	var length = req.body.length;
 
 	if (date == undefined || length == undefined) {
-		response.status(400).send({ "message": "date/length fields are not valid" });
+		res.status(400).send({ "message": "date/length fields are not valid" });
 	}
 
 	console.log(date);
@@ -161,26 +125,29 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 
 	console.log("start converting");
 
+	// video processing, convert mpeg to mp4
 	ffmpeg(req.file.path)
 	.save(outFile)
 	.on('end', function() {
 		console.log('processing done');
+		// upload converted video to cloud storage
 		bucket.upload(outFile, function(err, file, apiResponse) {
 			if (err) {
 				console.log('upload error');
-				response.status(400).send({ "message": "date/length fields are not valid" });
+				res.status(400).send({ "message": "upload was unsuccessful" });
 			}
-	
 		});
 
+		// run motion detection / severity calculation
 		const spawn = require("child_process").spawn;
-		const mt = spawn('python3', ['./motion_detector.py', outFile]);
+		const mt = spawn('python', ['./motion_detector.py', outFile, date]);
 		console.log('start motion detection');
 
 		mt.stdout.on('data', (data) => {
-			console.log(data.toString());
-			var score = data.toString();
+			console.log(typeof(data));
+			var score = data.toString().replace(/\n/g, '');
 
+			// insert file into to the database
 			var fileDB = client.db("smarti").collection("file");
 			fileDB.insertOne({
 				Url: "gs://macro-dogfish-306517.appspot.com/" + inFile.name + '.mp4',
@@ -189,12 +156,48 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 				Severity: score
 			}, function (err) {
 				if (err) {
-					response.status(400).send({ "message": "Error occured when saving file info" }, 400);
 					throw err;
 				}
 				else {
 					console.log("successful!")
-					response.status(200).send({ success: true });
+
+					// check if push notification needs to be sent to the user
+					var userDB = client.db("smarti").collection("user");
+					userDB.findOne({}, function (err, item) {
+						if (err) {
+							throw err;
+						}
+
+						console.log(item.Threshold);
+						console.log(item.Notification);
+						vidResult = parseInt(score);
+						console.log(vidResult);
+
+						if (item.Threshold <= vidResult && item.Notification) {
+							console.log("need to send notification!");
+							const message = {
+								notification: {
+									title: 'Smarti Alert',
+									body: 'New video is available'
+								},
+								token: registrationToken
+							};
+						
+							// Send a message to the device corresponding to the provided
+							// registration token.
+							admin.messaging().send(message)
+								.then((response) => {
+									console.log('Successfully sent message:', response);
+								})
+								.catch((error) => {
+									console.log('Error sending message:', error);
+							});
+						} else {
+							console.log("no need to send notification");
+							res.send("no notif end");
+						}
+					});
+					res.status(200).send({ success: true });
 				}
 			});
 		});
@@ -204,7 +207,6 @@ app.post('/uploadvideo', upload.single('video'), (req, response, next) => {
 		});
 	})
 });
-
 
 
 app.listen(3000, () => console.log('listening on port 3000'));
