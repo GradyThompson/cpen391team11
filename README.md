@@ -1,8 +1,14 @@
 # cpen391team11
+## The project
+This project Smart i, is a smart security solution making use of a PIR sensor (infrared motion detection). The system records suspicious events, rating the severity or security threat and notifying the user. The camera records the events and is avaiable through the mobile app.
+
+## Running the program
 Required Hardware:
 - D8M GPIO Camera from Terasic
 - PIR sensor
 - DE1 SOC
+Required Software:
+- Quartus
 
 
 Hardware setup:
