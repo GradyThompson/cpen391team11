@@ -14,14 +14,11 @@ date = sys.argv[2]
 hh = date[11:13] if date[11] != '0' else date[12:13]
 mm = date[14:16] if date[14] != '0' else date[15:16]
 
+first = cv2.resize(first, (500, 500))
 first_gray = cv2.cvtColor(first, cv2.COLOR_BGR2GRAY)
 first_gray = cv2.GaussianBlur(first_gray, (21, 21), 0)
 
-userStart = time(hour = 22, minute = 0)
-userEnd = time(hour = 6, minute = 0)
 recordTime = time(hour = int(hh), minute = int(mm))
-
-timeInRange = utils.checkTime(userStart, userEnd, recordTime)
 
 sizeScore = 0
 mvScore = 0
@@ -36,6 +33,7 @@ while True:
     if frame is None:
         break
 
+    frame = cv2.resize(frame, (500, 500))
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
@@ -113,9 +111,9 @@ while True:
     sizeScore += frameScore
     mvScore += frameMvScore
 
-    cv2.imshow('Frame', frame)
-    cv2.imshow('FG MASK Frame', thresh)
-    cv2.imshow('FG MASK delta', frameDelta)
+    # cv2.imshow('Frame', frame)
+    # cv2.imshow('FG MASK Frame', thresh)
+    # cv2.imshow('FG MASK delta', frameDelta)
 
     keyboard = cv2.waitKey(20)
     if keyboard == ord("q"):
@@ -128,13 +126,19 @@ fps = int(cap.get(cv2.CAP_PROP_FPS))
 sizeScore /= frames
 mvScore /= frames
 #print(frameMvScore)
-sizeScore = utils.scaleScore(sizeScore)
-mvScore = utils.scaleScore(mvScore)
+timescore = utils.checkTime(recordTime)
+sizeScore = utils.scaleSizeScore(sizeScore)
+mvScore = utils.scaleMVScore(mvScore)
 recordLength = int(frames / fps) / 60
 
-score = utils.severityCalculation(timeInRange, recordLength, sizeScore, mvScore)
+# print(timescore)
+# print(sizeScore)
+# print(mvScore)
+# print(recordLength)
+
+score = utils.severityCalculation(recordTime, recordLength, sizeScore, mvScore)
 print(int(round(score / 10)))
 sys.stdout.flush()
 
 cap.release()
-cv2.destroyAllWindows()
+# cv2.destroyAllWindows()

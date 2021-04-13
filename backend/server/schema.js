@@ -3,11 +3,12 @@ const { Schema } = mongoose;
 
 const user = new Schema({
   Uid:  Number,
+  Token: String,
   Threshold: Number,
-  Notification: Boolean
+  Notification: Boolean,
 });
 
-const file = new Schema({
+const files = new Schema({
     Uid: Number,
     Url: String,
     Date: String,

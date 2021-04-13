@@ -41,15 +41,14 @@ app.get('/', (req, res) => {
 	res.send("we are connected");
 });
 
-app.post('/auth/create', (req, response) => {
-	// check is user_id is already in db, return error
-	// connect to auth db and update with user_id and password
-	if (req.body.name == undefined || req.body.email == undefined) {
+app.post('/createuser', (req, response) => {
+	// check is user_id is already in db, return error\
+	if (req.body.uid == undefined) {
 		response.status(400).send({ "message": "Create new user failed due to request fields not being valid" });
 	}
 	else {
 		var userDB = client.db("smarti").collection("user");
-		userDB.findOne({ Email: req.body.email }, function (err, item) {
+		userDB.findOne({ Uid: req.body.uid }, function (err, item) {
 			if (err) {
 				throw err;
 			}
@@ -58,8 +57,10 @@ app.post('/auth/create', (req, response) => {
 			 */
 			if (item == undefined) {
 				userDB.insertOne({
-					Name: req.body.name,
-					Email: req.body.email
+					Uid: req.body.uid,
+					Token: req.body.token,
+					Threshold: 0,
+					Notification: true,
 				}, function (err) {
 					if (err) {
 						response.status(400).send({ "message": "Error occured when creating user" }, 400);
@@ -78,7 +79,7 @@ app.post('/auth/create', (req, response) => {
 	}
 });
 
-app.get('/getVid', (req, response) => {
+app.get('/getvideo', (req, response) => {
 	var fileDB = client.db("smarti").collection("file");
 	fileDB.find({}, {projection: {_id: 0}}).toArray(function(error, documents) {
 		if (error) throw error;
@@ -140,11 +141,11 @@ app.post('/uploadvideo', upload.single('video'), (req, res, next) => {
 
 		// run motion detection / severity calculation
 		const spawn = require("child_process").spawn;
-		const mt = spawn('python', ['./motion_detector.py', outFile, date]);
+		const mt = spawn('python3', ['./motion_detector.py', outFile, date]);
 		console.log('start motion detection');
 
 		mt.stdout.on('data', (data) => {
-			console.log(typeof(data));
+			console.log(data.toString());
 			var score = data.toString().replace(/\n/g, '');
 
 			// insert file into to the database
@@ -188,6 +189,7 @@ app.post('/uploadvideo', upload.single('video'), (req, res, next) => {
 							admin.messaging().send(message)
 								.then((response) => {
 									console.log('Successfully sent message:', response);
+									res.send("successful");
 								})
 								.catch((error) => {
 									console.log('Error sending message:', error);
@@ -197,7 +199,6 @@ app.post('/uploadvideo', upload.single('video'), (req, res, next) => {
 							res.send("no notif end");
 						}
 					});
-					res.status(200).send({ success: true });
 				}
 			});
 		});
