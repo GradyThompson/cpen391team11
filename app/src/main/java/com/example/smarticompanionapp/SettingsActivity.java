@@ -12,6 +12,7 @@ package com.example.smarticompanionapp;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -77,6 +78,7 @@ public class SettingsActivity extends AppCompatActivity {
             String url = "http://35.239.13.217:3000/settings";
 
             try {
+                Toast.makeText(SettingsActivity.this, String.valueOf(SettingsFragment.getSettings().getSeverityThres()), Toast.LENGTH_SHORT).show();
                 object.put("Severity Threshold", SettingsFragment.getSettings().getSeverityThres());
                 object.put("Toggle Notifications", SettingsFragment.getSettings().getPushNotifs());
             } catch (JSONException e) {
@@ -149,7 +151,7 @@ public class SettingsActivity extends AppCompatActivity {
             maxTime.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    settings.setMaxLength(Integer.parseInt((String) newValue));
+                    settings.setMaxLength(Integer.parseInt(String.valueOf(newValue)));
                     return true;
                 }
             });
@@ -158,7 +160,7 @@ public class SettingsActivity extends AppCompatActivity {
             minTime.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    settings.setMinLength(Integer.parseInt((String) newValue));
+                    settings.setMinLength(Integer.parseInt(String.valueOf(newValue)));
                     return true;
                 }
             });
@@ -178,7 +180,7 @@ public class SettingsActivity extends AppCompatActivity {
             severityThres.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    settings.setSeverityThres(Integer.parseInt((String) newValue));
+                    settings.setSeverityThres(Integer.parseInt(String.valueOf(newValue)));
                     return true;
                 }
             });
