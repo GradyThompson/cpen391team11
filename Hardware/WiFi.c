@@ -50,6 +50,9 @@ S_MASK ) ));
 
     printf("Running leds. To exit, press Ctrl+C.\n");
     while(!stop){
+      if (*h2p_lw_pir_addr == 1) {
+	system("curl -X POST -F "video=@path" -d "date:2021-MM-DD HH:MM:SS" -d "length:HH:MM:SS" http://35.239.13.217:3000/uploadvideo");
+      }
         *h2p_lw_led_addr = *h2p_lw_pir_addr;
     }
 
