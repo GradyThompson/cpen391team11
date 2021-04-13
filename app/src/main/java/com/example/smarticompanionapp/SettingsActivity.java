@@ -74,13 +74,28 @@ public class SettingsActivity extends AppCompatActivity {
             final Gson g = new Gson();
             final JSONObject object = new JSONObject();
             final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url = "";
+            String url = "http://35.239.13.217:3000/settings";
+
+            try {
+                object.put("Severity Threshold", SettingsFragment.getSettings().getSeverityThres());
+                object.put("Toggle Notifications", SettingsFragment.getSettings().getPushNotifs());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
             final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Toast.makeText(getApplicationContext(),"Settings Changed", Toast.LENGTH_SHORT);
+                            try {
+                                if ((Boolean) response.get("success")){
+                                    Toast.makeText(getApplicationContext(),"Settings Changed", Toast.LENGTH_SHORT);
+                                }
+                                else {
+                                    Toast.makeText(getApplicationContext(),"Settings Not Changed", Toast.LENGTH_SHORT);
+
+                                }
+                            } catch (JSONException e) { }
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -113,7 +128,7 @@ public class SettingsActivity extends AppCompatActivity {
         private ListPreference minTime;
         private SwitchPreferenceCompat pushNotif;
         private ListPreference severityThres;
-        private SettingsResult settings;
+        private static SettingsResult settings;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -168,5 +183,10 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
         }
+
+        public static SettingsResult getSettings() {
+            return settings;
+        }
     }
+
 }
