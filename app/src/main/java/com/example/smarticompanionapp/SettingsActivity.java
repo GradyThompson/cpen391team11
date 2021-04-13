@@ -78,7 +78,6 @@ public class SettingsActivity extends AppCompatActivity {
             String url = "http://35.239.13.217:3000/settings";
 
             try {
-                Toast.makeText(SettingsActivity.this, String.valueOf(SettingsFragment.getSettings().getSeverityThres()), Toast.LENGTH_SHORT).show();
                 object.put("Severity Threshold", SettingsFragment.getSettings().getSeverityThres());
                 object.put("Toggle Notifications", SettingsFragment.getSettings().getPushNotifs());
             } catch (JSONException e) {
