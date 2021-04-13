@@ -3,6 +3,7 @@ module rleenc(
 	input reset_n,
 	output reg rdy,
 	input en,
+	input intra,
 	// RAM interface to DCT output
 	output [5:0] addr,
 	input [15:0] q,
@@ -82,7 +83,7 @@ module rleenc(
 				end
 				
 				// Logic to record the RLE values
-				if (q == 6'b0) begin // Count run of zeros
+				if ((q == 6'b0) && ((h_dc != 1'b0) || (intra != 1'b0))) begin // Count run of zeros
 					next_rle = h_len + 6'h1;
 					if ((x == 3'd7) && (y == 3'd7)) begin // Last digit is a zero
 						h_end = 1'b1; // Signal end of block
