@@ -35,8 +35,6 @@ admin.initializeApp({
 });
 var bucket =  admin.storage().bucket();
 
-var registrationToken = 'cmRGIQ48Qd6EfZoxeh_6AI:APA91bE6NIDYJ831HAPnAzhoBNom2CXOTCYJfrKczGQCwcDwXRuAzbFG_bV-Az0_loUibG-QZoSTLcKA0rojPCtLZfVQLFjvv27uPUBzfrwT5n69-NIqL0xMMrVjLNm_hruYadr8TAPl';
-
 app.get('/', (req, res) => {
 	res.send("we are connected");
 });
@@ -141,7 +139,7 @@ app.post('/uploadvideo', upload.single('video'), (req, res, next) => {
 
 		// run motion detection / severity calculation
 		const spawn = require("child_process").spawn;
-		const mt = spawn('python3', ['./motion_detector.py', outFile, date]);
+		const mt = spawn('python', ['./motion_detector.py', outFile, date]);
 		console.log('start motion detection');
 
 		mt.stdout.on('data', (data) => {
